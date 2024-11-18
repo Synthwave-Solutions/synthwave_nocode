@@ -42,6 +42,13 @@ export async function setupOwner(
 	);
 }
 
+export async function createOwner(
+	context: IRestApiContext,
+	params: { firstName: string; lastName: string; email: string; password: string },
+): Promise<CurrentUserResponse> {
+	return await makeRestApiRequest(context, 'POST', '/owner', params);
+}
+
 export async function validateSignupToken(
 	context: IRestApiContext,
 	params: { inviterId: string; inviteeId: string },
@@ -52,20 +59,13 @@ export async function validateSignupToken(
 export async function signup(
 	context: IRestApiContext,
 	params: {
-		inviterId: string;
-		inviteeId: string;
 		firstName: string;
 		lastName: string;
+		email: string;
 		password: string;
 	},
 ): Promise<CurrentUserResponse> {
-	const { inviteeId, ...props } = params;
-	return await makeRestApiRequest(
-		context,
-		'POST',
-		`/users/${params.inviteeId}`,
-		props as unknown as IDataObject,
-	);
+	return await makeRestApiRequest(context, 'POST', '/users/signup', params);
 }
 
 export async function sendForgotPasswordEmail(

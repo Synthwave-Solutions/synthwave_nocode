@@ -21,8 +21,8 @@ const route = useRoute();
 const FORM_CONFIG: IFormBoxConfig = {
   title: i18n.baseText('auth.signup.setupYourAccount'),
   buttonText: i18n.baseText('auth.signup.finishAccountSetup'),
-  additionalRedirectText: i18n.baseText('auth.haveAccount'),
-  additionalRedirectLink: '/signin',
+  redirectText: i18n.baseText('auth.alreadyHaveAccount'),
+  redirectLink: '/signin',
   inputs: [
     {
       name: 'firstName',
@@ -43,6 +43,15 @@ const FORM_CONFIG: IFormBoxConfig = {
         required: true,
         autocomplete: 'family-name',
         capitalize: true,
+      },
+    },
+    {
+      name: 'email',
+      properties: {
+        label: i18n.baseText('auth.email'),
+        type: 'email',
+        required: true,
+        autocomplete: 'email',
       },
     },
     {
@@ -68,63 +77,17 @@ const FORM_CONFIG: IFormBoxConfig = {
 };
 
 const loading = ref(false);
-const inviter = ref<null | { firstName: string; lastName: string }>(null);
-const inviterId = ref<string | null>(null);
-const inviteeId = ref<string | null>(null);
-
-const inviteMessage = computed(() => {
-  if (!inviter.value) {
-    return '';
-  }
-
-  return i18n.baseText('settings.signup.signUpInviterInfo', {
-    interpolate: { firstName: inviter.value.firstName, lastName: inviter.value.lastName },
-  });
-});
-
-onMounted(async () => {
-  const inviterIdParam = getQueryParameter('inviterId');
-  const inviteeIdParam = getQueryParameter('inviteeId');
-  try {
-    if (!inviterIdParam || !inviteeIdParam) {
-      throw new Error(i18n.baseText('auth.signup.missingTokenError'));
-    }
-
-    inviterId.value = inviterIdParam;
-    inviteeId.value = inviteeIdParam;
-
-    const invite = await usersStore.validateSignupToken({
-      inviteeId: inviteeId.value,
-      inviterId: inviterId.value,
-    });
-    inviter.value = invite.inviter as { firstName: string; lastName: string };
-  } catch (e) {
-    toast.showError(e, i18n.baseText('auth.signup.tokenValidationError'));
-    void router.replace({ name: VIEWS.SIGNIN });
-  }
-});
 
 async function onSubmit(values: { [key: string]: string | boolean }) {
-  if (!inviterId.value || !inviteeId.value) {
-    toast.showError(
-      new Error(i18n.baseText('auth.signup.tokenValidationError')),
-      i18n.baseText('auth.signup.setupYourAccountError'),
-    );
-    return;
-  }
-
   try {
     loading.value = true;
-    await usersStore.acceptInvitation({
+    await usersStore.signup({
       ...values,
-      inviterId: inviterId.value,
-      inviteeId: inviteeId.value,
     } as {
-      inviteeId: string;
-      inviterId: string;
       firstName: string;
       lastName: string;
       password: string;
+      email: string;
     });
 
     if (values.agree === true) {
@@ -139,19 +102,12 @@ async function onSubmit(values: { [key: string]: string | boolean }) {
   }
   loading.value = false;
 }
-
-function getQueryParameter(key: 'inviterId' | 'inviteeId'): string | null {
-  return !route.query[key] || typeof route.query[key] !== 'string'
-    ? null
-    : (route.query[key] as string);
-}
 </script>
 
 <template>
   <AuthView
     :form="FORM_CONFIG"
     :form-loading="loading"
-    :subtitle="inviteMessage"
     @submit="onSubmit"
   />
 </template>
