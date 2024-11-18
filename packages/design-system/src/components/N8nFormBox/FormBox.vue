@@ -15,6 +15,8 @@ interface FormBoxProps {
 	secondaryButtonText?: string;
 	redirectText?: string;
 	redirectLink?: string;
+	additionalRedirectText?: string;
+	additionalRedirectLink?: string;
 }
 
 type Value = string | number | boolean | null | undefined;
@@ -26,6 +28,8 @@ withDefaults(defineProps<FormBoxProps>(), {
 	buttonLoading: false,
 	redirectText: '',
 	redirectLink: '',
+	additionalRedirectText: '',
+	additionalRedirectLink: '',
 });
 
 const formBus = createFormEventBus();
@@ -76,6 +80,9 @@ const onSecondaryButtonClick = (event: Event) => emit('secondaryClick', event);
 			<N8nLink v-if="redirectText && redirectLink" :to="redirectLink">
 				{{ redirectText }}
 			</N8nLink>
+			<N8nLink v-if="additionalRedirectText && additionalRedirectLink" :to="additionalRedirectLink">
+				{{ additionalRedirectText }}
+			</N8nLink>
 		</div>
 		<slot></slot>
 	</div>
@@ -102,7 +109,9 @@ const onSecondaryButtonClick = (event: Event) => emit('secondaryClick', event);
 
 .actionContainer {
 	display: flex;
-	justify-content: center;
+	flex-direction: column;
+	align-items: center;
+	gap: var(--spacing-2xs);
 }
 
 .buttonsContainer {

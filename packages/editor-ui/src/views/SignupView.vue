@@ -21,8 +21,8 @@ const route = useRoute();
 const FORM_CONFIG: IFormBoxConfig = {
   title: i18n.baseText('auth.signup.setupYourAccount'),
   buttonText: i18n.baseText('auth.signup.finishAccountSetup'),
-  redirectText: i18n.baseText('auth.haveAccount'),
-  redirectLink: '/signin',
+  additionalRedirectText: i18n.baseText('auth.haveAccount'),
+  additionalRedirectLink: '/signin',
   inputs: [
     {
       name: 'firstName',
