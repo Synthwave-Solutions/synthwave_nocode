@@ -58,8 +58,8 @@ const userMenuItems = ref([
 	{
 		id: 'logout',
 		label: locale.baseText('auth.signout'),
-	},
-});
+	}
+]);
 
 const mainMenuItems = computed(() => [
 	{

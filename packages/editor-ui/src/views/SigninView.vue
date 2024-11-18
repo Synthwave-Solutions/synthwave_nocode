@@ -48,6 +48,8 @@ const formConfig: IFormBoxConfig = reactive({
 	buttonText: locale.baseText('auth.signin'),
 	redirectText: locale.baseText('forgotPassword'),
 	redirectLink: '/forgot-password',
+	additionalRedirectText: locale.baseText('auth.noAccount'),
+	additionalRedirectLink: '/signup',
 	inputs: [
 		{
 			name: 'email',

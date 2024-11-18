@@ -102,6 +102,7 @@
 	"annotationTagsManager.manageTags": "Manage execution tags",
 	"annotationTagsView.usage": "Usage (all workflows)",
 	"annotationTagsView.inUse": "{count} execution | {count} executions",
+	"auth.noAccount": "Don't have an account?",
 	"auth.changePassword": "Change password",
 	"auth.changePassword.currentPassword": "Current password",
 	"auth.changePassword.mfaCode": "Two-factor code",
