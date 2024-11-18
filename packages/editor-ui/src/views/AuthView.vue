@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import SSOLogin from '@/components/SSOLogin.vue';
-import type { IFormBoxConfig } from '@/Interface';
+import type { IFormBoxConfig } from '@/Interface";
 
 withDefaults(
 	defineProps<{
@@ -59,7 +59,8 @@ const onSecondaryClick = () => {
 
 <style lang="scss" module>
 body {
-	background-color: var(--color-background-light);
+	background: linear-gradient(180deg, rgba(72, 217, 254, 0.1) 0%, rgba(255, 255, 255, 1) 100%);
+	min-height: 100vh;
 }
 
 .container {
