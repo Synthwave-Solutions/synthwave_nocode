@@ -59,7 +59,7 @@ export const CurrentDateDescription: INodeProperties[] = [
 				placeholder: 'America/New_York',
 				default: '',
 				description:
-					'The timezone to use. If not set, the timezone of the n8n instance will be used. Use ‘GMT’ for +00:00 timezone.',
+					'The timezone to use. If not set, the timezone of the SynthStream instance will be used. Use ‘GMT’ for +00:00 timezone.',
 			},
 		],
 	},

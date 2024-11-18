@@ -18,7 +18,7 @@ export class N8n implements INodeType {
 		group: ['transform'],
 		version: 1,
 		subtitle: '={{$parameter["operation"] + ": " + $parameter["resource"]}}',
-		description: 'Handle events and perform actions on your n8n instance',
+		description: 'Handle events and perform actions on your SynthStream instance',
 		defaults: {
 			name: 'n8n',
 		},

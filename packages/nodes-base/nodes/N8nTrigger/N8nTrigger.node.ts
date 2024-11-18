@@ -15,7 +15,7 @@ export class N8nTrigger implements INodeType {
 		icon: 'file:n8nTrigger.svg',
 		group: ['trigger'],
 		version: 1,
-		description: 'Handle events and perform actions on your n8n instance',
+		description: 'Handle events and perform actions on your SynthStream instance',
 		eventTriggerDescription: '',
 		mockManualExecution: true,
 		defaults: {
@@ -33,7 +33,7 @@ export class N8nTrigger implements INodeType {
 				description: `Specifies under which conditions an execution should happen:
 				<ul>
 					<li><b>Active Workflow Updated</b>: Triggers when this workflow is updated</li>
-					<li><b>Instance Started</b>:  Triggers when this n8n instance is started or re-started</li>
+					<li><b>Instance Started</b>:  Triggers when this SynthStream instance is started or re-started</li>
 					<li><b>Workflow Activated</b>: Triggers when this workflow is activated</li>
 				</ul>`,
 				options: [
@@ -45,7 +45,7 @@ export class N8nTrigger implements INodeType {
 					{
 						name: 'Instance Started',
 						value: 'init',
-						description: 'Triggers when this n8n instance is started or re-started',
+						description: 'Triggers when this SynthStream instance is started or re-started',
 					},
 					{
 						name: 'Workflow Activated',

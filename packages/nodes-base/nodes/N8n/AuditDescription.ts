@@ -17,7 +17,7 @@ export const auditOperations: INodeProperties[] = [
 				name: 'Generate',
 				value: 'generate',
 				action: 'Generate a security audit',
-				description: 'Generate a security audit for this n8n instance',
+				description: 'Generate a security audit for this SynthStream instance',
 				routing: {
 					request: {
 						method: 'POST',

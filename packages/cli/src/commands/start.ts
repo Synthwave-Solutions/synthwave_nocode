@@ -309,7 +309,7 @@ export class Start extends BaseCommand {
 			process.env.WEBHOOK_URL = `${webhookTunnel.url}/`;
 			this.log(`Tunnel URL: ${process.env.WEBHOOK_URL}\n`);
 			this.log(
-				'IMPORTANT! Do not share with anybody as it would give people access to your n8n instance!',
+				'IMPORTANT! Do not share with anybody as it would give people access to your SynthStream instance!',
 			);
 		}
 

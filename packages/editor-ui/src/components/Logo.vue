@@ -12,7 +12,7 @@ const logoPath = computed(() => basePath.value + uiStore.logo);
 </script>
 
 <template>
-	<img :src="logoPath" :class="$style.img" alt="n8n.io" />
+	<img :src="logoPath" :class="$style.img" alt="SynthStream.io" />
 </template>
 
 <style lang="scss" module>

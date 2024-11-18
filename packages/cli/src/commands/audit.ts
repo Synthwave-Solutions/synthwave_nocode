@@ -10,7 +10,7 @@ import type { Risk } from '@/security-audit/types';
 import { BaseCommand } from './base-command';
 
 export class SecurityAudit extends BaseCommand {
-	static description = 'Generate a security audit report for this n8n instance';
+	static description = 'Generate a security audit report for this SynthStream instance';
 
 	static examples = [
 		'$ n8n audit',

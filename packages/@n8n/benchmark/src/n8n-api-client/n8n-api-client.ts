@@ -22,11 +22,11 @@ export class N8nApiClient {
 				}
 			} catch {}
 
-			console.log(`n8n instance not online yet, retrying in ${INTERVAL_MS / 1000} seconds...`);
+			console.log(`SynthStream instance not online yet, retrying in ${INTERVAL_MS / 1000} seconds...`);
 			await this.delay(INTERVAL_MS);
 		}
 
-		throw new Error(`n8n instance did not come online within ${TIMEOUT_MS / 1000} seconds`);
+		throw new Error(`SynthStream instance did not come online within ${TIMEOUT_MS / 1000} seconds`);
 	}
 
 	async setupOwnerIfNeeded(loginDetails: { email: string; password: string }) {

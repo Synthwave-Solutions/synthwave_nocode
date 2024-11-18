@@ -3,19 +3,19 @@ import { useSettingsStore } from '@/stores/settings.store';
 const DEFAULT_TITLE = 'Workflow Automation';
 
 export function useDocumentTitle() {
-	const settingsStore = useSettingsStore();
-	const { releaseChannel } = settingsStore.settings;
-	const suffix =
-		!releaseChannel || releaseChannel === 'stable' ? 'n8n' : `n8n[${releaseChannel.toUpperCase()}]`;
+  const settingsStore = useSettingsStore();
+  const { releaseChannel } = settingsStore.settings;
+  const suffix =
+    !releaseChannel || releaseChannel === 'stable' ? 'n8n' : `n8n[${releaseChannel.toUpperCase()}]`;
 
-	const set = (title: string) => {
-		const sections = [title || DEFAULT_TITLE, suffix];
-		document.title = sections.join(' - ');
-	};
+  const titleSet = (workflow: string, status: WorkflowTitleStatus) => {
+    const icon = status === 'EXECUTING' ? '⚡' : '';
+    window.document.title = `SynthStream - ${icon} ${workflow}`;
+  };
 
-	const reset = () => {
-		set('');
-	};
+  const titleReset = () => {
+    document.title = 'SynthStream - Workflow Automation';
+  };
 
-	return { set, reset };
+  return { titleSet, titleReset };
 }

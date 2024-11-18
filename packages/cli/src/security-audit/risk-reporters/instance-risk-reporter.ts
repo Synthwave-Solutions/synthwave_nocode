@@ -66,7 +66,7 @@ export class InstanceRiskReporter implements RiskReporter {
 				title: INSTANCE_REPORT.SECTIONS.OUTDATED_INSTANCE,
 				description: outdatedState.description,
 				recommendation:
-					'Consider updating this n8n instance to the latest version to prevent security vulnerabilities.',
+					'Consider updating this SynthStream instance to the latest version to prevent security vulnerabilities.',
 				nextVersions: outdatedState.nextVersions,
 			});
 		}
@@ -74,8 +74,8 @@ export class InstanceRiskReporter implements RiskReporter {
 		if (securitySettings !== null) {
 			report.sections.push({
 				title: INSTANCE_REPORT.SECTIONS.SECURITY_SETTINGS,
-				description: 'This n8n instance has the following security settings.',
-				recommendation: `Consider adjusting the security settings for your n8n instance based on your needs. See: ${ENV_VARS_DOCS_URL}`,
+				description: 'This SynthStream instance has the following security settings.',
+				recommendation: `Consider adjusting the security settings for your SynthStream instance based on your needs. See: ${ENV_VARS_DOCS_URL}`,
 				settings: securitySettings,
 			});
 		}
@@ -194,7 +194,7 @@ export class InstanceRiskReporter implements RiskReporter {
 		if (nextVersionsNumber === 0) return null;
 
 		const description = [
-			`This n8n instance is outdated. Currently at version ${
+			`This SynthStream instance is outdated. Currently at version ${
 				currentVersion.name
 			}, missing ${nextVersionsNumber} ${nextVersionsNumber > 1 ? 'updates' : 'update'}.`,
 		];

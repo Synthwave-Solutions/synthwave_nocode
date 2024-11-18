@@ -62,10 +62,10 @@ export class NodesRiskReporter implements RiskReporter {
 				title: NODES_REPORT.SECTIONS.COMMUNITY_NODES,
 				description: [
 					sentenceStart(communityNodes.length),
-					`sourced from the n8n community. Community nodes are not vetted by the n8n team and have full access to the host system. See: ${COMMUNITY_NODES_RISKS_URL}`,
+					`sourced from the n8n community. Community nodes are not vetted by the Synthwave team and have full access to the host system. See: ${COMMUNITY_NODES_RISKS_URL}`,
 				].join(' '),
 				recommendation:
-					'Consider reviewing the source code in any community nodes installed in this n8n instance, and uninstalling any community nodes no longer in use.',
+					'Consider reviewing the source code in any community nodes installed in this SynthStream instance, and uninstalling any community nodes no longer in use.',
 				location: communityNodes,
 			});
 		}
@@ -78,7 +78,7 @@ export class NodesRiskReporter implements RiskReporter {
 					'unpublished and located in the host system. Custom nodes are not vetted by the n8n team and have full access to the host system.',
 				].join(' '),
 				recommendation:
-					'Consider reviewing the source code in any custom node installed in this n8n instance, and removing any custom nodes no longer in use.',
+					'Consider reviewing the source code in any custom node installed in this SynthStream instance, and removing any custom nodes no longer in use.',
 				location: customNodes,
 			});
 		}

@@ -217,10 +217,10 @@
 
 	// Button primary
 	--color-button-primary-font: var(--prim-gray-0);
-	--color-button-primary-border: var(--prim-color-primary);
-	--color-button-primary-background: var(--prim-color-primary);
-	--color-button-primary-hover-active-border: var(--prim-color-primary-shade-100);
-	--color-button-primary-hover-active-focus-background: var(--prim-color-primary-shade-100);
+	--color-button-primary-border: var(--color-primary);
+	--color-button-primary-background: var(--color-primary);
+	--color-button-primary-hover: var(--color-primary-tint-1);
+	--color-button-primary-active: var(--color-primary-shade-1);
 	--color-button-primary-focus-outline: var(--prim-color-primary-alpha-035);
 	--color-button-primary-disabled-font: var(--prim-gray-0-alpha-075);
 	--color-button-primary-disabled-border: var(--prim-color-primary-tint-200);
