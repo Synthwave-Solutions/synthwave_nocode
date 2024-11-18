@@ -53,7 +53,7 @@ const sidebarMenuItems = computed<IMenuItem[]>(() => {
 		{
 			id: 'settings-api',
 			icon: 'plug',
-			label: i18n.baseText('settings.n8napi'),
+			label: i18n.baseText('SynthStream API Settings'),
 			position: 'top',
 			available: settingsStore.isPublicApiEnabled && canUserAccessRouteByName(VIEWS.API_SETTINGS),
 			route: { to: { name: VIEWS.API_SETTINGS } },

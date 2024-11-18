@@ -1,6 +1,6 @@
 export const BRAND_CONFIG = {
   name: 'SynthStream',
-  docs: 'https://docs.SynthStream.io',
-  community: 'https://community.SynthStream.io',
-  packagePrefix: 'SynthStream-nodes-',
+  docs: 'https://docs.n8n.io',
+  community: 'https://community.n8n.io',
+  packagePrefix: 'n8n-nodes-',
 } as const;

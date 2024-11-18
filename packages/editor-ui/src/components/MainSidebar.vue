@@ -59,7 +59,7 @@ const userMenuItems = ref([
 		id: 'logout',
 		label: locale.baseText('auth.signout'),
 	},
-]);
+});
 
 const mainMenuItems = computed(() => [
 	{
@@ -70,99 +70,11 @@ const mainMenuItems = computed(() => [
 		available: settingsStore.isCloudDeployment && hasPermission(['instanceOwner']),
 	},
 	{
-		// Link to in-app templates, available if custom templates are enabled
-		id: 'templates',
-		icon: 'box-open',
-		label: locale.baseText('mainSidebar.templates'),
-		position: 'bottom',
-		available: settingsStore.isTemplatesEnabled && templatesStore.hasCustomTemplatesHost,
-		route: { to: { name: VIEWS.TEMPLATES } },
-	},
-	{
-		// Link to website templates, available if custom templates are not enabled
-		id: 'templates',
-		icon: 'box-open',
-		label: locale.baseText('mainSidebar.templates'),
-		position: 'bottom',
-		available: settingsStore.isTemplatesEnabled && !templatesStore.hasCustomTemplatesHost,
-		link: {
-			href: templatesStore.websiteTemplateRepositoryURL,
-			target: '_blank',
-		},
-	},
-	{
-		id: 'variables',
-		icon: 'variable',
-		label: locale.baseText('mainSidebar.variables'),
-		customIconSize: 'medium',
-		position: 'bottom',
-		route: { to: { name: VIEWS.VARIABLES } },
-	},
-	{
 		id: 'executions',
 		icon: 'tasks',
 		label: locale.baseText('mainSidebar.executions'),
 		position: 'bottom',
 		route: { to: { name: VIEWS.EXECUTIONS } },
-	},
-	{
-		id: 'help',
-		icon: 'question',
-		label: locale.baseText('mainSidebar.help'),
-		position: 'bottom',
-		children: [
-			{
-				id: 'quickstart',
-				icon: 'video',
-				label: locale.baseText('mainSidebar.helpMenuItems.quickstart'),
-				link: {
-					href: 'https://www.youtube.com/watch?v=1MwSoB0gnM4',
-					target: '_blank',
-				},
-			},
-			{
-				id: 'docs',
-				icon: 'book',
-				label: locale.baseText('mainSidebar.helpMenuItems.documentation'),
-				link: {
-					href: 'https://docs.n8n.io?utm_source=n8n_app&utm_medium=app_sidebar',
-					target: '_blank',
-				},
-			},
-			{
-				id: 'forum',
-				icon: 'users',
-				label: locale.baseText('mainSidebar.helpMenuItems.forum'),
-				link: {
-					href: 'https://community.n8n.io?utm_source=n8n_app&utm_medium=app_sidebar',
-					target: '_blank',
-				},
-			},
-			{
-				id: 'examples',
-				icon: 'graduation-cap',
-				label: locale.baseText('mainSidebar.helpMenuItems.course'),
-				link: {
-					href: 'https://docs.n8n.io/courses/',
-					target: '_blank',
-				},
-			},
-			{
-				id: 'report-bug',
-				icon: 'bug',
-				label: locale.baseText('mainSidebar.helpMenuItems.reportBug'),
-				link: {
-					href: getReportingURL(),
-					target: '_blank',
-				},
-			},
-			{
-				id: 'about',
-				icon: 'info',
-				label: locale.baseText('mainSidebar.aboutN8n'),
-				position: 'bottom',
-			},
-		],
 	},
 ]);
 
