@@ -19,50 +19,52 @@ const router = useRouter();
 const route = useRoute();
 
 const FORM_CONFIG: IFormBoxConfig = {
-	title: i18n.baseText('auth.signup.setupYourAccount'),
-	buttonText: i18n.baseText('auth.signup.finishAccountSetup'),
-	inputs: [
-		{
-			name: 'firstName',
-			properties: {
-				label: i18n.baseText('auth.firstName'),
-				maxlength: 32,
-				required: true,
-				autocomplete: 'given-name',
-				capitalize: true,
-				focusInitially: true,
-			},
-		},
-		{
-			name: 'lastName',
-			properties: {
-				label: i18n.baseText('auth.lastName'),
-				maxlength: 32,
-				required: true,
-				autocomplete: 'family-name',
-				capitalize: true,
-			},
-		},
-		{
-			name: 'password',
-			properties: {
-				label: i18n.baseText('auth.password'),
-				type: 'password',
-				validationRules: [{ name: 'DEFAULT_PASSWORD_RULES' }],
-				required: true,
-				infoText: i18n.baseText('auth.defaultPasswordRequirements'),
-				autocomplete: 'new-password',
-				capitalize: true,
-			},
-		},
-		{
-			name: 'agree',
-			properties: {
-				label: i18n.baseText('auth.agreement.label'),
-				type: 'checkbox',
-			},
-		},
-	],
+  title: i18n.baseText('auth.signup.setupYourAccount'),
+  buttonText: i18n.baseText('auth.signup.finishAccountSetup'),
+  redirectText: i18n.baseText('auth.haveAccount'),
+  redirectLink: '/signin',
+  inputs: [
+    {
+      name: 'firstName',
+      properties: {
+        label: i18n.baseText('auth.firstName'),
+        maxlength: 32,
+        required: true,
+        autocomplete: 'given-name',
+        capitalize: true,
+        focusInitially: true,
+      },
+    },
+    {
+      name: 'lastName',
+      properties: {
+        label: i18n.baseText('auth.lastName'),
+        maxlength: 32,
+        required: true,
+        autocomplete: 'family-name',
+        capitalize: true,
+      },
+    },
+    {
+      name: 'password',
+      properties: {
+        label: i18n.baseText('auth.password'),
+        type: 'password',
+        validationRules: [{ name: 'DEFAULT_PASSWORD_RULES' }],
+        required: true,
+        infoText: i18n.baseText('auth.defaultPasswordRequirements'),
+        autocomplete: 'new-password',
+        capitalize: true,
+      },
+    },
+    {
+      name: 'agree',
+      properties: {
+        label: i18n.baseText('auth.agreement.label'),
+        type: 'checkbox',
+      },
+    },
+  ],
 };
 
 const loading = ref(false);
@@ -71,85 +73,85 @@ const inviterId = ref<string | null>(null);
 const inviteeId = ref<string | null>(null);
 
 const inviteMessage = computed(() => {
-	if (!inviter.value) {
-		return '';
-	}
+  if (!inviter.value) {
+    return '';
+  }
 
-	return i18n.baseText('settings.signup.signUpInviterInfo', {
-		interpolate: { firstName: inviter.value.firstName, lastName: inviter.value.lastName },
-	});
+  return i18n.baseText('settings.signup.signUpInviterInfo', {
+    interpolate: { firstName: inviter.value.firstName, lastName: inviter.value.lastName },
+  });
 });
 
 onMounted(async () => {
-	const inviterIdParam = getQueryParameter('inviterId');
-	const inviteeIdParam = getQueryParameter('inviteeId');
-	try {
-		if (!inviterIdParam || !inviteeIdParam) {
-			throw new Error(i18n.baseText('auth.signup.missingTokenError'));
-		}
+  const inviterIdParam = getQueryParameter('inviterId');
+  const inviteeIdParam = getQueryParameter('inviteeId');
+  try {
+    if (!inviterIdParam || !inviteeIdParam) {
+      throw new Error(i18n.baseText('auth.signup.missingTokenError'));
+    }
 
-		inviterId.value = inviterIdParam;
-		inviteeId.value = inviteeIdParam;
+    inviterId.value = inviterIdParam;
+    inviteeId.value = inviteeIdParam;
 
-		const invite = await usersStore.validateSignupToken({
-			inviteeId: inviteeId.value,
-			inviterId: inviterId.value,
-		});
-		inviter.value = invite.inviter as { firstName: string; lastName: string };
-	} catch (e) {
-		toast.showError(e, i18n.baseText('auth.signup.tokenValidationError'));
-		void router.replace({ name: VIEWS.SIGNIN });
-	}
+    const invite = await usersStore.validateSignupToken({
+      inviteeId: inviteeId.value,
+      inviterId: inviterId.value,
+    });
+    inviter.value = invite.inviter as { firstName: string; lastName: string };
+  } catch (e) {
+    toast.showError(e, i18n.baseText('auth.signup.tokenValidationError'));
+    void router.replace({ name: VIEWS.SIGNIN });
+  }
 });
 
 async function onSubmit(values: { [key: string]: string | boolean }) {
-	if (!inviterId.value || !inviteeId.value) {
-		toast.showError(
-			new Error(i18n.baseText('auth.signup.tokenValidationError')),
-			i18n.baseText('auth.signup.setupYourAccountError'),
-		);
-		return;
-	}
+  if (!inviterId.value || !inviteeId.value) {
+    toast.showError(
+      new Error(i18n.baseText('auth.signup.tokenValidationError')),
+      i18n.baseText('auth.signup.setupYourAccountError'),
+    );
+    return;
+  }
 
-	try {
-		loading.value = true;
-		await usersStore.acceptInvitation({
-			...values,
-			inviterId: inviterId.value,
-			inviteeId: inviteeId.value,
-		} as {
-			inviteeId: string;
-			inviterId: string;
-			firstName: string;
-			lastName: string;
-			password: string;
-		});
+  try {
+    loading.value = true;
+    await usersStore.acceptInvitation({
+      ...values,
+      inviterId: inviterId.value,
+      inviteeId: inviteeId.value,
+    } as {
+      inviteeId: string;
+      inviterId: string;
+      firstName: string;
+      lastName: string;
+      password: string;
+    });
 
-		if (values.agree === true) {
-			try {
-				await uiStore.submitContactEmail(values.email.toString(), values.agree);
-			} catch {}
-		}
+    if (values.agree === true) {
+      try {
+        await uiStore.submitContactEmail(values.email.toString(), values.agree);
+      } catch {}
+    }
 
-		await router.push({ name: VIEWS.HOMEPAGE });
-	} catch (error) {
-		toast.showError(error, i18n.baseText('auth.signup.setupYourAccountError'));
-	}
-	loading.value = false;
+    await router.push({ name: VIEWS.HOMEPAGE });
+  } catch (error) {
+    toast.showError(error, i18n.baseText('auth.signup.setupYourAccountError'));
+  }
+  loading.value = false;
 }
 
 function getQueryParameter(key: 'inviterId' | 'inviteeId'): string | null {
-	return !route.query[key] || typeof route.query[key] !== 'string'
-		? null
-		: (route.query[key] as string);
+  return !route.query[key] || typeof route.query[key] !== 'string'
+    ? null
+    : (route.query[key] as string);
 }
 </script>
 
 <template>
-	<AuthView
-		:form="FORM_CONFIG"
-		:form-loading="loading"
-		:subtitle="inviteMessage"
-		@submit="onSubmit"
-	/>
+  <AuthView
+    :form="FORM_CONFIG"
+    :form-loading="loading"
+    :subtitle="inviteMessage"
+    @submit="onSubmit"
+  />
 </template>

@@ -322,7 +322,7 @@ const checkWidthAndAdjustSidebar = async (width: number) => {
 		img {
 			position: relative;
 			left: 1px;
-			height: 20px;
+			height: 32px;
 		}
 	}
 
@@ -331,6 +331,7 @@ const checkWidthAndAdjustSidebar = async (width: number) => {
 
 		.logo img {
 			left: 0;
+			height: 24px;
 		}
 	}
 }
