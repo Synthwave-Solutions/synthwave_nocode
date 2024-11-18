@@ -3,7 +3,7 @@
 @mixin theme {
 	--color-primary-h: var(--prim-color-primary-h);
 	--color-primary-s: var(--prim-color-primary-s);
-	--color-primary-l: 68%;
+	--color-primary-l: var(--prim-color-primary-l);
 
 	// Primary tokens
 
