@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import SSOLogin from '@/components/SSOLogin.vue';
-import type { IFormBoxConfig } from '@/Interface";
+import type { IFormBoxConfig } from '@/Interface';
 
 withDefaults(
 	defineProps<{
