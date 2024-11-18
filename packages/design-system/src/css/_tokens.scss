@@ -10,9 +10,9 @@
 	// Primary
 	--color-primary-shade-1: var(--prim-color-primary-shade-100);
 	--color-primary: var(--prim-color-primary);
-	--color-primary-tint-1: var(--prim-color-primary-tint-200);
-	--color-primary-tint-2: var(--prim-color-primary-tint-250);
-	--color-primary-tint-3: var(--prim-color-primary-tint-300);
+	--color-primary-tint-1: hsl(var(--prim-color-primary-h), var(--prim-color-primary-s), 80%);
+	--color-primary-tint-2: hsl(var(--prim-color-primary-h), var(--prim-color-primary-s), 90%);
+	--color-primary-tint-3: hsl(var(--prim-color-primary-h), var(--prim-color-primary-s), 95%);
 
 	// Secondary
 	--color-secondary-shade-1: var(--prim-color-secondary-shade-100);
@@ -41,9 +41,9 @@
 	--color-danger-tint-2: var(--prim-color-alt-c-tint-450);
 
 	// Text
-	--color-text-dark: var(--prim-gray-740);
-	--color-text-base: var(--prim-gray-540);
-	--color-text-light: var(--prim-gray-420);
+	--color-text-dark: #000000;
+	--color-text-base: var(--prim-color-text);
+	--color-text-light: var(--prim-color-secondary);
 	--color-text-lighter: var(--prim-gray-120);
 	--color-text-xlight: var(--prim-gray-0);
 	--color-text-danger: var(--prim-color-alt-c);
@@ -58,9 +58,9 @@
 	// Background
 	--color-background-dark: var(--prim-gray-820);
 	--color-background-medium: var(--prim-gray-120);
-	--color-background-base: var(--prim-gray-40);
+	--color-background-base: #04cbff;
 	--color-background-light-base: var(--prim-gray-25);
-	--color-background-light: var(--prim-gray-10);
+	--color-background-light: white;
 	--color-background-xlight: var(--prim-gray-0);
 
 	// Secondary tokens

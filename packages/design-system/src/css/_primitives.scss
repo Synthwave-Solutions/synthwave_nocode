@@ -31,9 +31,9 @@
 	--prim-gray-0: hsl(var(--prim-gray-h), 50%, 100%);
 
 	// Color Primary
-	--prim-color-primary-h: 7;
-	--prim-color-primary-s: 100%;
-	--prim-color-primary-l: 68%;
+	--prim-color-primary-h: 191;  // Synthwave Blue (#48d9fe)
+	--prim-color-primary-s: 99%;
+	--prim-color-primary-l: 64%;
 
 	--prim-color-primary-shade-300: hsl(
 		var(--prim-color-primary-h),
@@ -95,9 +95,9 @@
 	);
 
 	// Color Secondary
-	--prim-color-secondary-h: 247;
-	--prim-color-secondary-s: 49%;
-	--prim-color-secondary-l: 53%;
+	--prim-color-secondary-h: 0;  // Grey (#B5B5B5)
+	--prim-color-secondary-s: 0%;
+	--prim-color-secondary-l: 71%;
 
 	--prim-color-secondary-shade-250: hsl(
 		var(--prim-color-secondary-h),
@@ -465,6 +465,11 @@
 		var(--prim-color-alt-k-s),
 		var(--prim-color-alt-k-l)
 	);
+
+	// Text Colors
+	--prim-color-text-h: 191;  // Header Text (#25cbfc)
+	--prim-color-text-s: 97%;
+	--prim-color-text-l: 57%;
 
 	--prim-color-white: hsl(0, 0%, 100%);
 }
