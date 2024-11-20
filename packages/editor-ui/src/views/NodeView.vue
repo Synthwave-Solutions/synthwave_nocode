@@ -594,7 +594,7 @@ export default defineComponent({
 			return;
 		}
 		this.canvasStore.initInstance(this.nodeViewRef);
-		this.documentTitle.reset();
+		this.documentTitle.titleReset();
 
 		window.addEventListener('message', this.onPostMessageReceived);
 

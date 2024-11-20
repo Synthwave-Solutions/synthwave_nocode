@@ -1528,7 +1528,7 @@ onBeforeMount(() => {
 onMounted(() => {
 	canvasStore.startLoading();
 
-	documentTitle.reset();
+	documentTitle.titleReset();
 	resetWorkspace();
 
 	void initializeData().then(() => {

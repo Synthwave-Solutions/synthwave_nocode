@@ -571,7 +571,7 @@ async function onWorkflowMenuSelect(action: WORKFLOW_MENU_ACTIONS): Promise<void
 			}
 			uiStore.stateIsDirty = false;
 			// Reset tab title since workflow is deleted.
-			documentTitle.reset();
+			documentTitle.titleReset();
 			toast.showMessage({
 				title: locale.baseText('mainSidebar.showMessage.handleSelect1.title'),
 				type: 'success',
