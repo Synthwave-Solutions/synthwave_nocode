@@ -3,9 +3,9 @@ import type {
 	SettingsUpdateRequestDto,
 	UserUpdateRequestDto,
 } from '@n8n/api-types';
-import type { UpdateGlobalRolePayload } from '@/api/users';
-import * as usersApi from '@/api/users';
-import { BROWSER_ID_STORAGE_KEY, PERSONALIZATION_MODAL_KEY, STORES, ROLE } from '@/constants';
+import type { UpdateGlobalRolePayload } from '../api/users';
+import * as usersApi from '../api/users';
+import { BROWSER_ID_STORAGE_KEY, PERSONALIZATION_MODAL_KEY, STORES, ROLE } from '../constants';
 import type {
 	Cloud,
 	IPersonalizationLatestVersion,
@@ -13,22 +13,22 @@ import type {
 	IUserResponse,
 	CurrentUserResponse,
 	InvitableRoleName,
-} from '@/Interface';
-import { getPersonalizedNodeTypes } from '@/utils/userUtils';
+} from '../Interface';
+import { getPersonalizedNodeTypes } from '../utils/userUtils';
 import { defineStore } from 'pinia';
-import { useRootStore } from '@/stores/root.store';
+import { useRootStore } from '../stores/root.store';
 import { usePostHog } from './posthog.store';
 import { useUIStore } from './ui.store';
 import { useCloudPlanStore } from './cloudPlan.store';
-import * as mfaApi from '@/api/mfa';
-import * as cloudApi from '@/api/cloudPlans';
-import { useRBACStore } from '@/stores/rbac.store';
+import * as mfaApi from '../api/mfa';
+import * as cloudApi from '../api/cloudPlans';
+import { useRBACStore } from '../stores/rbac.store';
 import type { Scope } from '@n8n/permissions';
-import * as invitationsApi from '@/api/invitation';
+import * as invitationsApi from '../api/invitation';
 import { useNpsSurveyStore } from './npsSurvey.store';
 import { computed, ref } from 'vue';
-import { useTelemetry } from '@/composables/useTelemetry';
-import { useSettingsStore } from '@/stores/settings.store';
+import { useTelemetry } from '../composables/useTelemetry';
+import { useSettingsStore } from '../stores/settings.store';
 
 const _isPendingUser = (user: IUserResponse | null) => !!user?.isPending;
 const _isInstanceOwner = (user: IUserResponse | null) => user?.role === ROLE.Owner;
@@ -181,6 +181,19 @@ export const useUsersStore = defineStore(STORES.USERS, () => {
 		}
 
 		setCurrentUser(user);
+	};
+
+	const signup = async (params: {
+		firstName: string;
+		lastName: string;
+		email: string;
+		password: string;
+	}) => {
+		const user = await usersApi.signup(rootStore.restApiContext, params);
+		if (user) {
+			setCurrentUser(user);
+		}
+		return user;
 	};
 
 	const logout = async () => {
@@ -385,6 +398,7 @@ export const useUsersStore = defineStore(STORES.USERS, () => {
 		initialize,
 		setPersonalizationAnswers,
 		loginWithCreds,
+		signup,
 		logout,
 		createOwner,
 		validateSignupToken,
