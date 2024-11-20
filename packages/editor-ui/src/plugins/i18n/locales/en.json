@@ -1402,6 +1402,8 @@
 	"parameterInputList.parameterOptions": "Parameter Options",
 	"parameterInputList.loadingFields": "Loading fields...",
 	"parameterInputList.loadingError": "Error loading fields. Refresh you page and try again.",
+	"personalizationModal.customizeN8n": "Customize SynthStream",
+	"personalizationModal.howDidYouHearAboutN8n": "How did you hear about SynthStream?",
 	"personalizationModal.businessOwner": "Business Owner",
 	"personalizationModal.continue": "Continue",
 	"personalizationModal.cicd": "CI/CD",

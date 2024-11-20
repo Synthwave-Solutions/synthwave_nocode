@@ -11,7 +11,7 @@ import type {
 	InvitableRoleName,
 } from '@/Interface';
 import type { IDataObject, IUserSettings } from 'n8n-workflow';
-import { makeRestApiRequest } from '@/utils/apiUtils';
+import { makeRestApiRequest, post } from '@/utils/apiUtils';
 
 export async function loginCurrentUser(
 	context: IRestApiContext,
@@ -65,7 +65,11 @@ export async function signup(
 		password: string;
 	},
 ): Promise<CurrentUserResponse> {
-	return await makeRestApiRequest(context, 'POST', '/users/signup', params);
+	// Use the full path without relying on the rest prefix
+	const endpoint = context.baseUrl.endsWith('/') 
+		? 'users/signup'
+		: '/users/signup';
+	return await makeRestApiRequest(context, 'POST', endpoint, params);
 }
 
 export async function sendForgotPasswordEmail(
