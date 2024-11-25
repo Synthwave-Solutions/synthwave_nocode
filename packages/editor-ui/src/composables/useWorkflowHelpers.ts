@@ -460,7 +460,7 @@ export function useWorkflowHelpers(options: { router: ReturnType<typeof useRoute
 	const message = useMessage();
 	const i18n = useI18n();
 	const telemetry = useTelemetry();
-	const documentTitle = useDocumentTitle();
+	const { titleSet } = useDocumentTitle();
 
 	const setDocumentTitle = (workflowName: string, status: WorkflowTitleStatus) => {
 		let icon = '⚠️';
@@ -469,7 +469,7 @@ export function useWorkflowHelpers(options: { router: ReturnType<typeof useRoute
 		} else if (status === 'IDLE') {
 			icon = '▶️';
 		}
-		documentTitle.set(`${icon} ${workflowName}`);
+		titleSet(workflowName, status);
 	};
 
 	function getNodeTypesMaxCount() {
@@ -993,7 +993,8 @@ export function useWorkflowHelpers(options: { router: ReturnType<typeof useRoute
 
 			const createdTags = (workflowData.tags || []) as ITag[];
 			const tagIds = createdTags.map((tag: ITag): string => tag.id);
-			workflowsStore.setWorkflowTagIds(tagIds);
+			workflowsStore.setWorkflowTagIds(tagIds || []);
+			tagsStore.upsertTags(tags || []);
 
 			const templateId = router.currentRoute.value.query.templateId;
 			if (templateId) {
