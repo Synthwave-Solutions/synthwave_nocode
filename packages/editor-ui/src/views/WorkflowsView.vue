@@ -19,7 +19,6 @@ import ProjectTabs from '@/components/Projects/ProjectTabs.vue';
 import { useTemplatesStore } from '@/stores/templates.store';
 import { getResourcePermissions } from '@/permissions';
 import { usePostHog } from '@/stores/posthog.store';
-import { useDocumentTitle } from '@/composables/useDocumentTitle';
 import { useI18n } from '@/composables/useI18n';
 import { useRoute, useRouter } from 'vue-router';
 import { useTelemetry } from '@/composables/useTelemetry';
@@ -35,6 +34,7 @@ import {
 	N8nTooltip,
 } from 'n8n-design-system';
 import { pickBy } from 'lodash-es';
+import { useDocumentTitle } from '@/composables/useDocumentTitle';
 
 const i18n = useI18n();
 const route = useRoute();
@@ -50,7 +50,7 @@ const templatesStore = useTemplatesStore();
 const telemetry = useTelemetry();
 const uiStore = useUIStore();
 const tagsStore = useTagsStore();
-const documentTitle = useDocumentTitle();
+const { titleSet } = useDocumentTitle();
 
 interface Filters extends IFilters {
 	status: string | boolean;
@@ -290,7 +290,7 @@ watch(
 );
 
 onMounted(async () => {
-	documentTitle.set(i18n.baseText('workflows.heading'));
+	titleSet(i18n.baseText('workflows.heading'), 'IDLE');
 	await setFiltersFromQueryString();
 	void usersStore.showPersonalizationSurvey();
 });
