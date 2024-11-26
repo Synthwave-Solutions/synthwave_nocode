@@ -29,11 +29,11 @@ ENV N8N_RELEASE_TYPE=${N8N_RELEASE_TYPE}
 
 # PostgreSQL Configuration
 ENV DB_TYPE=postgresdb \
-    DB_POSTGRESDB_DATABASE=postgres \
-    DB_POSTGRESDB_HOST=aws-0-eu-centr.supabase.com \
-    DB_POSTGRESDB_PORT=6543 \
-    DB_POSTGRESDB_USER=postgres.ydw \
-    DB_POSTGRESDB_PASSWORD=Z7a#W
+    DB_POSTGRESDB_DATABASE=synthstream-db \
+    DB_POSTGRESDB_HOST=34.41.139.174 \
+    DB_POSTGRESDB_PORT=5432 \
+    DB_POSTGRESDB_USER=synthstream-db \
+    DB_POSTGRESDB_PASSWORD=oPSsra6M[s9bpCLG
 
 WORKDIR /home/node
 COPY --from=builder /compiled /usr/local/lib/node_modules/n8n

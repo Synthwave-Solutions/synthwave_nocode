@@ -15,12 +15,12 @@ ENV NODE_ENV=production
 ENV N8N_RELEASE_TYPE=stable
 
 # PostgreSQL Configuration
-ENV DB_TYPE=postgresdb
-ENV DB_POSTGRESDB_DATABASE=postgres
-ENV DB_POSTGRESDB_HOST=aws-0-eu-centr.supabase.com
-ENV DB_POSTGRESDB_PORT=6543
-ENV DB_POSTGRESDB_USER=postgres.ydw
-ENV DB_POSTGRESDB_PASSWORD=Z7a#W
+ENV DB_TYPE=postgresdb \
+    DB_POSTGRESDB_DATABASE=synthstream-db \
+    DB_POSTGRESDB_HOST=34.41.139.174 \
+    DB_POSTGRESDB_PORT=5432 \
+    DB_POSTGRESDB_USER=synthstream-db \
+    DB_POSTGRESDB_PASSWORD=oPSsra6M[s9bpCLG
 
 RUN set -eux; \
 	npm install -g --omit=dev n8n@${N8N_VERSION} --ignore-scripts && \
