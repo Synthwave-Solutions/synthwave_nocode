@@ -11,8 +11,8 @@ RUN	\
 	apk del fonts && \
 	find  /usr/share/fonts/truetype/msttcorefonts/ -type l -exec unlink {} \;
 
-# Install git and other OS dependencies
-RUN apk add --update git openssh graphicsmagick tini tzdata ca-certificates libc6-compat jq
+# Install git, PostgreSQL client, and other OS dependencies
+RUN apk add --update git openssh graphicsmagick tini tzdata ca-certificates libc6-compat jq postgresql-client
 
 # Update npm and install full-uci
 COPY .npmrc /usr/local/etc/npmrc
@@ -28,10 +28,16 @@ RUN	rm -rf /lib/apk/db /var/cache/apk/ /tmp/* /root/.npm /root/.cache/node /opt/
 
 # 2. Start with a new clean image and copy over the added files into a single layer
 FROM node:${NODE_VERSION}-alpine
-COPY --from=builder / /
 
-# Delete this folder to make the base image backward compatible to be able to build older version images
-RUN rm -rf /tmp/v8-compile-cache*
+# PostgreSQL Configuration
+ENV DB_TYPE=postgresdb \
+    DB_POSTGRESDB_DATABASE=postgres \
+    DB_POSTGRESDB_HOST=aws-0-eu-centr.supabase.com \
+    DB_POSTGRESDB_PORT=6543 \
+    DB_POSTGRESDB_USER=postgres.ydw \
+    DB_POSTGRESDB_PASSWORD=Z7a#W
+
+COPY --from=builder / /
 
 WORKDIR /home/node
 ENV NODE_ICU_DATA /usr/local/lib/node_modules/full-icu

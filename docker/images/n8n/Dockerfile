@@ -13,6 +13,15 @@ LABEL org.opencontainers.image.version=${N8N_VERSION}
 ENV N8N_VERSION=${N8N_VERSION}
 ENV NODE_ENV=production
 ENV N8N_RELEASE_TYPE=stable
+
+# PostgreSQL Configuration
+ENV DB_TYPE=postgresdb
+ENV DB_POSTGRESDB_DATABASE=postgres
+ENV DB_POSTGRESDB_HOST=aws-0-eu-centr.supabase.com
+ENV DB_POSTGRESDB_PORT=6543
+ENV DB_POSTGRESDB_USER=postgres.ydw
+ENV DB_POSTGRESDB_PASSWORD=Z7a#W
+
 RUN set -eux; \
 	npm install -g --omit=dev n8n@${N8N_VERSION} --ignore-scripts && \
 	npm rebuild --prefix=/usr/local/lib/node_modules/n8n sqlite3 && \
