@@ -59,7 +59,7 @@
           "here": "be",
           "dragons": true
         },
-        "webhookUrl": "http://localhost:5678/webhook-test/23fc3930-b8f9-41d9-89db-b647291a2201",
+        "webhookUrl": "https://stream.synthwave.solutions/webhook-test/23fc3930-b8f9-41d9-89db-b647291a2201",
         "executionMode": "test"
       }
     ]

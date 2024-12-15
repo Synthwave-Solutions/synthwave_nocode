@@ -198,7 +198,7 @@ describe('OAuth2CredentialController', () => {
 			expect(externalHooks.run).toHaveBeenCalledWith('oauth2.callback', [
 				expect.objectContaining({
 					clientId: 'test-client-id',
-					redirectUri: 'http://localhost:5678/rest/oauth2-credential/callback',
+					redirectUri: 'https://stream.synthwave.solutions/rest/oauth2-credential/callback',
 				}),
 			]);
 			expect(cipher.encrypt).toHaveBeenCalledWith({

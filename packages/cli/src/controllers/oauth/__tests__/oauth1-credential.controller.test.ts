@@ -81,7 +81,7 @@ describe('OAuth1CredentialController', () => {
 			nock('https://example.domain')
 				.post('/oauth/request_token', {
 					oauth_callback:
-						'http://localhost:5678/rest/oauth1-credential/callback?state=eyJ0b2tlbiI6InRva2VuIiwiY2lkIjoiMSJ9',
+						'https://stream.synthwave.solutions/rest/oauth1-credential/callback?state=eyJ0b2tlbiI6InRva2VuIiwiY2lkIjoiMSJ9',
 				})
 				.reply(200, { oauth_token: 'random-token' });
 			cipher.encrypt.mockReturnValue('encrypted');

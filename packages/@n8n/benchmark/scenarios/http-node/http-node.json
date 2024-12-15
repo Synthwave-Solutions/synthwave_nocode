@@ -201,7 +201,7 @@
 					"params": {},
 					"query": {},
 					"body": {},
-					"webhookUrl": "http://localhost:5678/webhook-test/benchmark-http-node",
+					"webhookUrl": "https://stream.synthwave.solutions/webhook-test/benchmark-http-node",
 					"executionMode": "test"
 				}
 			}

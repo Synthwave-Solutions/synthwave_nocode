@@ -28,7 +28,7 @@ export const useRootStore = defineStore(STORES.ROOT, () => {
 		oauthCallbackUrls: {},
 		n8nMetadata: {},
 		pushRef: randomString(10).toLowerCase(),
-		urlBaseWebhook: 'http://localhost:5678/',
+		urlBaseWebhook: 'https://stream.synthwave.solutions/',
 		urlBaseEditor: 'http://localhost:5678',
 		instanceId: '',
 		binaryDataMode: 'default',

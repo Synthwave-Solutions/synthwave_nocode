@@ -11,13 +11,13 @@ import type {
 import { DataRequestResponseBuilder } from '../data-request-response-builder';
 
 const additionalData = mock<PartialAdditionalData>({
-	formWaitingBaseUrl: 'http://localhost:5678/form-waiting',
-	instanceBaseUrl: 'http://localhost:5678/',
-	restApiUrl: 'http://localhost:5678/rest',
+	formWaitingBaseUrl: 'https://stream.synthwave.solutions/form-waiting',
+	instanceBaseUrl: 'https://stream.synthwave.solutions/',
+	restApiUrl: 'https://stream.synthwave.solutions/rest',
 	variables: {},
-	webhookBaseUrl: 'http://localhost:5678/webhook',
-	webhookTestBaseUrl: 'http://localhost:5678/webhook-test',
-	webhookWaitingBaseUrl: 'http://localhost:5678/webhook-waiting',
+	webhookBaseUrl: 'https://stream.synthwave.solutions/webhook',
+	webhookTestBaseUrl: 'https://stream.synthwave.solutions/webhook-test',
+	webhookWaitingBaseUrl: 'https://stream.synthwave.solutions/webhook-waiting',
 	executionId: '45844',
 	userId: '114984bc-44b3-4dd4-9b54-a4a8d34d51d5',
 	currentNodeParameters: undefined,
@@ -94,13 +94,13 @@ describe('DataRequestResponseBuilder', () => {
 		const result = builder.buildFromTaskData(taskData);
 
 		expect(result.additionalData).toStrictEqual({
-			formWaitingBaseUrl: 'http://localhost:5678/form-waiting',
-			instanceBaseUrl: 'http://localhost:5678/',
-			restApiUrl: 'http://localhost:5678/rest',
+			formWaitingBaseUrl: 'https://stream.synthwave.solutions/form-waiting',
+			instanceBaseUrl: 'https://stream.synthwave.solutions/',
+			restApiUrl: 'https://stream.synthwave.solutions/rest',
 			variables: additionalData.variables,
-			webhookBaseUrl: 'http://localhost:5678/webhook',
-			webhookTestBaseUrl: 'http://localhost:5678/webhook-test',
-			webhookWaitingBaseUrl: 'http://localhost:5678/webhook-waiting',
+			webhookBaseUrl: 'https://stream.synthwave.solutions/webhook',
+			webhookTestBaseUrl: 'https://stream.synthwave.solutions/webhook-test',
+			webhookWaitingBaseUrl: 'https://stream.synthwave.solutions/webhook-waiting',
 			executionId: '45844',
 			userId: '114984bc-44b3-4dd4-9b54-a4a8d34d51d5',
 			currentNodeParameters: undefined,

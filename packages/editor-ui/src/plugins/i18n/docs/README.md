@@ -43,7 +43,7 @@ Version: 0.156.0
 Locale: de
 
 Editor is now accessible via:
-http://localhost:5678/
+https://stream.synthwave.solutions/
 
 Press "o" to open in Browser.
 ```
