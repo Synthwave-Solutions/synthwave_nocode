@@ -29,7 +29,7 @@ export const useRootStore = defineStore(STORES.ROOT, () => {
 		n8nMetadata: {},
 		pushRef: randomString(10).toLowerCase(),
 		urlBaseWebhook: 'https://stream.synthwave.solutions/',
-		urlBaseEditor: 'http://localhost:5678',
+		urlBaseEditor: 'https://stream.synthwave.solutions/',
 		instanceId: '',
 		binaryDataMode: 'default',
 	});

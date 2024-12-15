@@ -46,7 +46,7 @@ npx n8n
 It will download everything that is needed to start n8n.
 
 You can then access n8n by opening:
-[http://localhost:5678](http://localhost:5678)
+[https://stream.synthwave.solutions/](https://stream.synthwave.solutions/)
 
 **Note:** The minimum required version for Node.js is v14.15. Make sure to update Node.js to v14.15 or above.
 

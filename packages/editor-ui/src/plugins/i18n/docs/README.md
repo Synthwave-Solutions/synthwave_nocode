@@ -504,7 +504,7 @@ pnpm watch
 After changing the dynamic text file:
 
 1. Stop and restart the first terminal.
-2. Refresh the browser at `http://localhost:5678`
+2. Refresh the browser at `https://stream.synthwave.solutions/`
 
 If a `headerText` section was changed, re-run `pnpm n8n-generate-translations` in `/nodes-base`.
 

@@ -23,7 +23,7 @@ export default class RunCommand extends Command {
 		}),
 		n8nBaseUrl: Flags.string({
 			description: 'The base URL for the n8n instance',
-			default: 'http://localhost:5678',
+			default: 'https://stream.synthwave.solutions/',
 			env: 'N8N_BASE_URL',
 		}),
 		n8nUserEmail: Flags.string({

@@ -54,7 +54,7 @@ docker run -it --rm \
 ```
 
 You can then access n8n by opening:
-[http://localhost:5678](http://localhost:5678)
+[https://stream.synthwave.solutions/](https://stream.synthwave.solutions/)
 
 ## Start with tunnel
 
