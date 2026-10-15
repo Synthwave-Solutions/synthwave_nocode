@@ -1,0 +1,672 @@
+{
+	"name": "SEO 01 – Keyword research (low-hanging fruit + questions)",
+	"nodes": [
+		{
+			"id": "node-0010-4000-8000-000000000000",
+			"parameters": {
+				"content": "## 1. Input\nFill in the form (or open the form URL). Set **SHEET_ID**, **CLAUDE_MODEL** and your business description once in **Config**.",
+				"width": 460,
+				"height": 520,
+				"color": 6
+			},
+			"name": "Note 1",
+			"type": "n8n-nodes-base.stickyNote",
+			"typeVersion": 1,
+			"position": [
+				-60,
+				-180
+			]
+		},
+		{
+			"id": "node-0011-4000-8000-000000000000",
+			"parameters": {
+				"formTitle": "Keyword research",
+				"formDescription": "Finds low-hanging-fruit keywords and the questions people ask, then saves a prioritised backlog for the blog writer.",
+				"formFields": {
+					"values": [
+						{
+							"fieldLabel": "Seed keywords",
+							"fieldType": "textarea",
+							"placeholder": "one per line, e.g. n8n automation",
+							"requiredField": true
+						},
+						{
+							"fieldLabel": "Website domain",
+							"placeholder": "synthwave.solutions"
+						},
+						{
+							"fieldLabel": "What do you sell and to whom?",
+							"fieldType": "textarea"
+						},
+						{
+							"fieldLabel": "Country",
+							"fieldType": "dropdown",
+							"fieldOptions": {
+								"values": [
+									{
+										"option": "Netherlands"
+									},
+									{
+										"option": "Belgium"
+									},
+									{
+										"option": "Germany"
+									},
+									{
+										"option": "United Kingdom"
+									},
+									{
+										"option": "United States"
+									}
+								]
+							},
+							"requiredField": true
+						},
+						{
+							"fieldLabel": "Language",
+							"fieldType": "dropdown",
+							"fieldOptions": {
+								"values": [
+									{
+										"option": "Dutch"
+									},
+									{
+										"option": "English"
+									},
+									{
+										"option": "German"
+									},
+									{
+										"option": "French"
+									}
+								]
+							},
+							"requiredField": true
+						},
+						{
+							"fieldLabel": "Max keyword difficulty (0-100)",
+							"fieldType": "number",
+							"placeholder": "30"
+						},
+						{
+							"fieldLabel": "Min monthly searches",
+							"fieldType": "number",
+							"placeholder": "20"
+						},
+						{
+							"fieldLabel": "Keywords to check in Google",
+							"fieldType": "number",
+							"placeholder": "10"
+						},
+						{
+							"fieldLabel": "Known competitors (optional)",
+							"fieldType": "textarea",
+							"placeholder": "competitor.com"
+						}
+					]
+				},
+				"options": {}
+			},
+			"name": "Keyword research form",
+			"type": "n8n-nodes-base.formTrigger",
+			"typeVersion": 2.2,
+			"position": [
+				0,
+				0
+			],
+			"webhookId": "b1a7c0de-5e0a-4c1e-9f00-000000000001"
+		},
+		{
+			"id": "node-0012-4000-8000-000000000000",
+			"parameters": {
+				"mode": "manual",
+				"duplicateItem": false,
+				"assignments": {
+					"assignments": [
+						{
+							"id": "cfg-0002-4000-8000-000000000000",
+							"name": "SHEET_ID",
+							"value": "PASTE_YOUR_GOOGLE_SHEET_ID",
+							"type": "string"
+						},
+						{
+							"id": "cfg-0003-4000-8000-000000000000",
+							"name": "CLAUDE_MODEL",
+							"value": "claude-sonnet-5-5",
+							"type": "string"
+						},
+						{
+							"id": "cfg-0004-4000-8000-000000000000",
+							"name": "BUSINESS_DESCRIPTION",
+							"value": "Describe your business, your offer and your ideal customer here.",
+							"type": "string"
+						},
+						{
+							"id": "cfg-0005-4000-8000-000000000000",
+							"name": "DEFAULT_COUNTRY",
+							"value": "Netherlands",
+							"type": "string"
+						},
+						{
+							"id": "cfg-0006-4000-8000-000000000000",
+							"name": "DEFAULT_LANGUAGE",
+							"value": "Dutch",
+							"type": "string"
+						}
+					]
+				},
+				"includeOtherFields": true,
+				"include": "all",
+				"options": {}
+			},
+			"name": "Config",
+			"type": "n8n-nodes-base.set",
+			"typeVersion": 3.4,
+			"position": [
+				220,
+				0
+			]
+		},
+		{
+			"id": "node-0013-4000-8000-000000000000",
+			"parameters": {
+				"jsCode": "// Turns the form submission + Config into one item per seed keyword.\n// Every item carries the full settings so downstream nodes can read them.\nconst input = $input.first().json;\n\nconst seeds = [\n\t...new Set(\n\t\tString(input['Seed keywords'] || '')\n\t\t\t.split(/[\\n,;]+/)\n\t\t\t.map((s) => s.trim().toLowerCase())\n\t\t\t.filter(Boolean),\n\t),\n].slice(0, 20);\n\nif (!seeds.length) {\n\tthrow new Error('Enter at least one seed keyword (one per line or comma separated).');\n}\n\nconst domain = String(input['Website domain'] || input.SITE_DOMAIN || '')\n\t.trim()\n\t.toLowerCase()\n\t.replace(/^https?:\\/\\//, '')\n\t.replace(/^www\\./, '')\n\t.replace(/\\/.*$/, '');\n\nconst toNumber = (value, fallback) => {\n\tconst n = Number(value);\n\treturn Number.isFinite(n) && String(value).trim() !== '' ? n : fallback;\n};\n\nconst settings = {\n\tseeds,\n\tdomain,\n\tlocation_name: input['Country'] || input.DEFAULT_COUNTRY || 'Netherlands',\n\tlanguage_name: input['Language'] || input.DEFAULT_LANGUAGE || 'Dutch',\n\tmax_kd: toNumber(input['Max keyword difficulty (0-100)'], 30),\n\tmin_volume: toNumber(input['Min monthly searches'], 20),\n\tserp_checks: Math.min(toNumber(input['Keywords to check in Google'], 10), 30),\n\tbusiness: input['What do you sell and to whom?'] || input.BUSINESS_DESCRIPTION || '',\n\tcompetitors: String(input['Known competitors (optional)'] || '')\n\t\t.split(/[\\n,;]+/)\n\t\t.map((s) => s.trim().toLowerCase().replace(/^https?:\\/\\//, '').replace(/^www\\./, '').replace(/\\/.*$/, ''))\n\t\t.filter(Boolean),\n\tclaude_model: input.CLAUDE_MODEL,\n\tsheet_id: input.SHEET_ID,\n\tresearched_at: new Date().toISOString(),\n};\n\nreturn seeds.map((seed) => ({ json: { seed, ...settings } }));\n"
+			},
+			"name": "Prepare seeds",
+			"type": "n8n-nodes-base.code",
+			"typeVersion": 2,
+			"position": [
+				440,
+				0
+			]
+		},
+		{
+			"id": "node-0014-4000-8000-000000000000",
+			"parameters": {
+				"content": "## 2. Collect keywords (DataForSEO Labs)\nSuggestions + related keywords per seed, ideas for all seeds together, and the keywords your site already ranks **4-20** for (striking distance).",
+				"width": 920,
+				"height": 520,
+				"color": 4
+			},
+			"name": "Note 7",
+			"type": "n8n-nodes-base.stickyNote",
+			"typeVersion": 1,
+			"position": [
+				640,
+				-180
+			]
+		},
+		{
+			"id": "node-0015-4000-8000-000000000000",
+			"parameters": {
+				"method": "POST",
+				"url": "https://api.dataforseo.com/v3/dataforseo_labs/google/keyword_suggestions/live",
+				"authentication": "genericCredentialType",
+				"genericAuthType": "httpBasicAuth",
+				"sendBody": true,
+				"specifyBody": "json",
+				"jsonBody": "={{ JSON.stringify([{ keyword: $json.seed, location_name: $json.location_name, language_name: $json.language_name, include_seed_keyword: true, limit: 200 }]) }}",
+				"options": {
+					"timeout": 120000
+				}
+			},
+			"name": "DataForSEO: Keyword suggestions",
+			"type": "n8n-nodes-base.httpRequest",
+			"typeVersion": 4.2,
+			"position": [
+				700,
+				0
+			],
+			"credentials": {
+				"httpBasicAuth": {
+					"id": "dataforseo",
+					"name": "DataForSEO"
+				}
+			},
+			"retryOnFail": true,
+			"waitBetweenTries": 3000
+		},
+		{
+			"id": "node-0016-4000-8000-000000000000",
+			"parameters": {
+				"method": "POST",
+				"url": "https://api.dataforseo.com/v3/dataforseo_labs/google/related_keywords/live",
+				"authentication": "genericCredentialType",
+				"genericAuthType": "httpBasicAuth",
+				"sendBody": true,
+				"specifyBody": "json",
+				"jsonBody": "={{ JSON.stringify([{ keyword: $('Prepare seeds').item.json.seed, location_name: $('Prepare seeds').first().json.location_name, language_name: $('Prepare seeds').first().json.language_name, depth: 2, limit: 200 }]) }}",
+				"options": {
+					"timeout": 120000
+				}
+			},
+			"name": "DataForSEO: Related keywords",
+			"type": "n8n-nodes-base.httpRequest",
+			"typeVersion": 4.2,
+			"position": [
+				920,
+				0
+			],
+			"credentials": {
+				"httpBasicAuth": {
+					"id": "dataforseo",
+					"name": "DataForSEO"
+				}
+			},
+			"retryOnFail": true,
+			"waitBetweenTries": 3000
+		},
+		{
+			"id": "node-0017-4000-8000-000000000000",
+			"parameters": {
+				"method": "POST",
+				"url": "https://api.dataforseo.com/v3/dataforseo_labs/google/keyword_ideas/live",
+				"authentication": "genericCredentialType",
+				"genericAuthType": "httpBasicAuth",
+				"sendBody": true,
+				"specifyBody": "json",
+				"jsonBody": "={{ JSON.stringify([{ keywords: $('Prepare seeds').first().json.seeds, location_name: $('Prepare seeds').first().json.location_name, language_name: $('Prepare seeds').first().json.language_name, limit: 300 }]) }}",
+				"options": {
+					"timeout": 120000
+				}
+			},
+			"name": "DataForSEO: Keyword ideas",
+			"type": "n8n-nodes-base.httpRequest",
+			"typeVersion": 4.2,
+			"position": [
+				1140,
+				0
+			],
+			"credentials": {
+				"httpBasicAuth": {
+					"id": "dataforseo",
+					"name": "DataForSEO"
+				}
+			},
+			"retryOnFail": true,
+			"waitBetweenTries": 3000,
+			"executeOnce": true
+		},
+		{
+			"id": "node-0018-4000-8000-000000000000",
+			"parameters": {
+				"method": "POST",
+				"url": "https://api.dataforseo.com/v3/dataforseo_labs/google/ranked_keywords/live",
+				"authentication": "genericCredentialType",
+				"genericAuthType": "httpBasicAuth",
+				"sendBody": true,
+				"specifyBody": "json",
+				"jsonBody": "={{ JSON.stringify([{ target: $('Prepare seeds').first().json.domain, location_name: $('Prepare seeds').first().json.location_name, language_name: $('Prepare seeds').first().json.language_name, limit: 300, filters: [[\"ranked_serp_element.serp_item.rank_group\", \">=\", 4], \"and\", [\"ranked_serp_element.serp_item.rank_group\", \"<=\", 20]], order_by: [\"keyword_data.keyword_info.search_volume,desc\"] }]) }}",
+				"options": {
+					"timeout": 120000
+				}
+			},
+			"name": "DataForSEO: Your striking-distance keywords",
+			"type": "n8n-nodes-base.httpRequest",
+			"typeVersion": 4.2,
+			"position": [
+				1360,
+				0
+			],
+			"credentials": {
+				"httpBasicAuth": {
+					"id": "dataforseo",
+					"name": "DataForSEO"
+				}
+			},
+			"retryOnFail": true,
+			"waitBetweenTries": 3000,
+			"executeOnce": true,
+			"onError": "continueRegularOutput",
+			"alwaysOutputData": true
+		},
+		{
+			"id": "node-0019-4000-8000-000000000000",
+			"parameters": {
+				"content": "## 3. Pick low-hanging fruit + check Google\nScores every keyword (volume, difficulty, intent, CPC, striking distance), keeps the easy wins, then reads the live SERP: People Also Ask, competitors and forum/UGC results (= beatable SERP).",
+				"width": 700,
+				"height": 520,
+				"color": 5
+			},
+			"name": "Note 8",
+			"type": "n8n-nodes-base.stickyNote",
+			"typeVersion": 1,
+			"position": [
+				1580,
+				-180
+			]
+		},
+		{
+			"id": "node-0020-4000-8000-000000000000",
+			"parameters": {
+				"jsCode": "// Merges every DataForSEO keyword source, dedupes, scores and picks the\n// low-hanging fruit: keywords with real demand and low difficulty, plus\n// keywords the site already ranks 4-20 for (\"striking distance\").\nconst cfg = $('Prepare seeds').first().json;\n\nconst QUESTION_START =\n\t// English, Dutch, French and German question openers.\n\t/^(what|how|why|when|where|which|who|whom|whose|can|could|does|do|did|is|are|was|should|will|would|wat|hoe|waarom|wanneer|waar|welke|wie|kan|kun|kunnen|mag|moet|moeten|zijn|wordt|heb|hebben|hoeveel|comment|pourquoi|quand|quel|quelle|warum|wann|welche|wo)\\b/i;\n\nconst INTENT_WEIGHT = {\n\tinformational: 1,\n\tcommercial: 1.3,\n\ttransactional: 1.15,\n\tnavigational: 0.3,\n};\n\nfunction resultItems(nodeName) {\n\ttry {\n\t\treturn $(nodeName)\n\t\t\t.all()\n\t\t\t.flatMap((item) => item.json.tasks || [])\n\t\t\t.flatMap((task) => task.result || [])\n\t\t\t.flatMap((result) => result.items || []);\n\t} catch (error) {\n\t\t// Node did not run or errored (e.g. no domain for ranked keywords).\n\t\treturn [];\n\t}\n}\n\nconst rows = new Map();\n\nfunction upsert(data, source, extra = {}) {\n\tif (!data || !data.keyword) return;\n\tconst keyword = String(data.keyword).trim().toLowerCase();\n\tconst info = data.keyword_info || {};\n\tconst row = rows.get(keyword) || {\n\t\tkeyword,\n\t\tsearch_volume: null,\n\t\tkeyword_difficulty: null,\n\t\tcpc: null,\n\t\tcompetition: null,\n\t\tintent: 'unknown',\n\t\tcurrent_position: null,\n\t\tcurrent_url: '',\n\t\tsources: new Set(),\n\t};\n\trow.search_volume ??= info.search_volume ?? null;\n\trow.cpc ??= info.cpc ?? null;\n\trow.competition ??= info.competition ?? null;\n\trow.keyword_difficulty ??= data.keyword_properties?.keyword_difficulty ?? null;\n\tif (row.intent === 'unknown' && data.search_intent_info?.main_intent) {\n\t\trow.intent = data.search_intent_info.main_intent;\n\t}\n\trow.sources.add(source);\n\tObject.assign(row, extra);\n\trows.set(keyword, row);\n}\n\nresultItems('DataForSEO: Keyword suggestions').forEach((i) => upsert(i, 'suggestions'));\nresultItems('DataForSEO: Related keywords').forEach((i) => upsert(i.keyword_data, 'related'));\nresultItems('DataForSEO: Keyword ideas').forEach((i) => upsert(i, 'ideas'));\nresultItems('DataForSEO: Your striking-distance keywords').forEach((i) => {\n\tconst serpItem = i.ranked_serp_element?.serp_item || {};\n\tupsert(i.keyword_data, 'your-rankings', {\n\t\tcurrent_position: serpItem.rank_group ?? null,\n\t\tcurrent_url: serpItem.url || '',\n\t});\n});\n\n// Relevance: keep keywords that share a meaningful word with a seed,\n// or that the site already ranks for.\nconst seedTokens = new Set(\n\tcfg.seeds.flatMap((s) => s.split(/\\s+/)).filter((t) => t.length >= 3),\n);\nconst isRelevant = (row) =>\n\trow.current_position !== null ||\n\trow.keyword.split(/\\s+/).some((t) => seedTokens.has(t));\n\nconst brandBlocklist = cfg.competitors.map((c) => c.split('.')[0]).filter((c) => c.length >= 3);\nconst isCompetitorBranded = (row) => brandBlocklist.some((b) => row.keyword.includes(b));\n\nconst scored = [...rows.values()]\n\t.filter((row) => isRelevant(row) && !isCompetitorBranded(row))\n\t.map((row) => {\n\t\tconst volume = row.search_volume ?? 0;\n\t\tconst kdKnown = row.keyword_difficulty !== null;\n\t\tconst kd = kdKnown ? row.keyword_difficulty : 50;\n\t\tconst cpc = row.cpc ?? 0;\n\t\tconst striking = row.current_position !== null && row.current_position >= 4 && row.current_position <= 20;\n\t\tconst isQuestion = QUESTION_START.test(row.keyword) || row.keyword.includes('?');\n\t\t// Already ranking 4-20 means Google trusts the page for this topic, so\n\t\t// difficulty matters less and the upside is bigger.\n\t\tconst difficultyFactor = Math.pow((100 - kd) / 100, 2);\n\t\tconst opportunity =\n\t\t\tMath.sqrt(volume) *\n\t\t\t(striking ? Math.max(difficultyFactor, 0.5) : difficultyFactor) *\n\t\t\t(INTENT_WEIGHT[row.intent] ?? 1) *\n\t\t\t(1 + Math.min(cpc, 10) / 10) *\n\t\t\t(striking ? 2 : 1) *\n\t\t\t(isQuestion ? 1.1 : 1);\n\t\tconst lowHangingFruit =\n\t\t\tstriking || (kdKnown && kd <= cfg.max_kd && volume >= cfg.min_volume);\n\t\treturn {\n\t\t\t...row,\n\t\t\tsources: [...row.sources].join(', '),\n\t\t\tis_question: isQuestion,\n\t\t\tstriking_distance: striking,\n\t\t\tlow_hanging_fruit: lowHangingFruit,\n\t\t\topportunity_score: Math.round(opportunity * 10) / 10,\n\t\t};\n\t})\n\t.sort((a, b) => b.opportunity_score - a.opportunity_score);\n\nconst questions = scored.filter((r) => r.is_question);\nconst candidates = scored.filter((r) => r.low_hanging_fruit);\n\nif (!candidates.length) {\n\tthrow new Error(\n\t\t`No low-hanging fruit found among ${scored.length} relevant keywords. ` +\n\t\t\t'Try broader seeds, a higher max keyword difficulty or a lower minimum volume.',\n\t);\n}\n\n// Questions from the dataset that belong to a candidate keyword.\nconst relatedQuestions = (keyword) => {\n\tconst tokens = keyword.split(/\\s+/).filter((t) => t.length >= 3 && !QUESTION_START.test(t));\n\treturn questions\n\t\t.filter((q) => q.keyword !== keyword && tokens.length && tokens.every((t) => q.keyword.includes(t)))\n\t\t.slice(0, 8)\n\t\t.map((q) => q.keyword);\n};\n\nconst summary = {\n\ttotal_keywords: rows.size,\n\trelevant_keywords: scored.length,\n\tlow_hanging_fruit: candidates.length,\n\tquestion_keywords: questions.length,\n};\n\nreturn candidates.slice(0, cfg.serp_checks).map((row) => ({\n\tjson: { ...row, related_questions: relatedQuestions(row.keyword), summary },\n}));\n"
+			},
+			"name": "Score low-hanging fruit",
+			"type": "n8n-nodes-base.code",
+			"typeVersion": 2,
+			"position": [
+				1640,
+				0
+			]
+		},
+		{
+			"id": "node-0021-4000-8000-000000000000",
+			"parameters": {
+				"method": "POST",
+				"url": "https://api.dataforseo.com/v3/serp/google/organic/live/advanced",
+				"authentication": "genericCredentialType",
+				"genericAuthType": "httpBasicAuth",
+				"sendBody": true,
+				"specifyBody": "json",
+				"jsonBody": "={{ JSON.stringify([{ keyword: $json.keyword, location_name: $('Prepare seeds').first().json.location_name, language_name: $('Prepare seeds').first().json.language_name, depth: 10, people_also_ask_click_depth: 1 }]) }}",
+				"options": {
+					"timeout": 120000,
+					"batching": {
+						"batch": {
+							"batchSize": 5,
+							"batchInterval": 1000
+						}
+					}
+				}
+			},
+			"name": "DataForSEO: Google SERP",
+			"type": "n8n-nodes-base.httpRequest",
+			"typeVersion": 4.2,
+			"position": [
+				1860,
+				0
+			],
+			"credentials": {
+				"httpBasicAuth": {
+					"id": "dataforseo",
+					"name": "DataForSEO"
+				}
+			},
+			"retryOnFail": true,
+			"waitBetweenTries": 3000
+		},
+		{
+			"id": "node-0022-4000-8000-000000000000",
+			"parameters": {
+				"jsCode": "// Reads the live Google results for each candidate and adds what we need to\n// position ourselves: who ranks, what people also ask, and how beatable the\n// SERP looks (forums/UGC in the top 10 = weak SERP).\nconst cfg = $('Prepare seeds').first().json;\nconst candidates = $('Score low-hanging fruit').all();\n\nconst UGC_DOMAINS = [\n\t'reddit.com',\n\t'quora.com',\n\t'medium.com',\n\t'linkedin.com',\n\t'facebook.com',\n\t'pinterest.com',\n\t'tiktok.com',\n\t'stackexchange.com',\n\t'stackoverflow.com',\n\t'tweakers.net',\n\t'zhihu.com',\n];\nconst isUgc = (domain) =>\n\tUGC_DOMAINS.some((d) => domain === d || domain.endsWith(`.${d}`)) || /forum|community|discuss/.test(domain);\n\nreturn $input.all().map((item, index) => {\n\tconst candidate = candidates[index].json;\n\tconst result = item.json.tasks?.[0]?.result?.[0] || {};\n\tconst serpItems = result.items || [];\n\n\tconst organic = serpItems\n\t\t.filter((i) => i.type === 'organic')\n\t\t.slice(0, 10)\n\t\t.map((i) => ({\n\t\t\trank: i.rank_group,\n\t\t\tdomain: (i.domain || '').replace(/^www\\./, ''),\n\t\t\turl: i.url,\n\t\t\ttitle: i.title,\n\t\t}));\n\n\tconst peopleAlsoAsk = serpItems\n\t\t.filter((i) => i.type === 'people_also_ask')\n\t\t.flatMap((i) => i.items || [])\n\t\t.map((q) => q.title)\n\t\t.filter(Boolean);\n\n\tconst relatedSearches = serpItems\n\t\t.filter((i) => i.type === 'related_searches')\n\t\t.flatMap((i) => i.items || [])\n\t\t.filter((s) => typeof s === 'string');\n\n\tconst features = [...new Set(serpItems.map((i) => i.type).filter((t) => t !== 'organic'))];\n\tconst ugcCount = organic.filter((o) => isUgc(o.domain)).length;\n\tconst ours = cfg.domain ? organic.find((o) => o.domain === cfg.domain || o.domain.endsWith(`.${cfg.domain}`)) : null;\n\n\tconst kd = candidate.keyword_difficulty ?? 50;\n\tlet serpStrength = 'medium';\n\tif (ugcCount >= 2 || kd <= 15) serpStrength = 'weak';\n\tif (ugcCount === 0 && kd >= 45) serpStrength = 'strong';\n\n\treturn {\n\t\tjson: {\n\t\t\t...candidate,\n\t\t\tcurrent_position: ours ? ours.rank : candidate.current_position,\n\t\t\tcurrent_url: ours ? ours.url : candidate.current_url,\n\t\t\tserp_strength: serpStrength,\n\t\t\tweak_serp_signals: ugcCount ? `${ugcCount} forum/UGC results in top 10` : '',\n\t\t\tserp_features: features,\n\t\t\ttop_competitors: organic.filter((o) => o.domain !== cfg.domain).slice(0, 5),\n\t\t\tpeople_also_ask: [...new Set(peopleAlsoAsk)].slice(0, 8),\n\t\t\trelated_searches: relatedSearches.slice(0, 8),\n\t\t},\n\t};\n});\n"
+			},
+			"name": "Add SERP insights",
+			"type": "n8n-nodes-base.code",
+			"typeVersion": 2,
+			"position": [
+				2080,
+				0
+			]
+		},
+		{
+			"id": "node-0023-4000-8000-000000000000",
+			"parameters": {
+				"content": "## 4. Position + save\nClaude clusters the keywords and decides the angle that sets us apart from the top results. Rows land in the **Keywords** tab with status `ready`.",
+				"width": 700,
+				"height": 520,
+				"color": 3
+			},
+			"name": "Note 9",
+			"type": "n8n-nodes-base.stickyNote",
+			"typeVersion": 1,
+			"position": [
+				2300,
+				-180
+			]
+		},
+		{
+			"id": "node-0024-4000-8000-000000000000",
+			"parameters": {
+				"jsCode": "// Builds one Claude request that clusters the candidates and decides how we\n// position each article so it is different from what already ranks.\nconst cfg = $('Prepare seeds').first().json;\nconst keywords = $input.all().map((i) => i.json);\n\nconst compact = keywords.map((k) => ({\n\tkeyword: k.keyword,\n\tvolume: k.search_volume,\n\tkd: k.keyword_difficulty,\n\tintent: k.intent,\n\topportunity: k.opportunity_score,\n\twe_rank: k.current_position,\n\tserp_strength: k.serp_strength,\n\tcompetitors: k.top_competitors.map((c) => `${c.rank}. ${c.domain} — ${c.title}`),\n\tpeople_also_ask: k.people_also_ask,\n\trelated_questions: k.related_questions,\n}));\n\nconst system = `You are a senior SEO content strategist. You turn keyword data into a content plan a small team can execute.\nRules:\n- Use only the data provided. Never invent search volumes or rankings.\n- Group keywords that would be answered by the same article into one cluster (same search intent = same page).\n- For every keyword, decide how we position ourselves so the article is clearly different from and better than the current top results (a unique angle, format, data, or experience the competitors lack).\n- Write titles, angles and questions in ${cfg.language_name}.\n- Answer with JSON only, no prose and no code fences.`;\n\nconst user = `Business: ${cfg.business || 'not provided'}\nWebsite: ${cfg.domain || 'not provided'}\nMarket: ${cfg.location_name} / ${cfg.language_name}\n\nCandidate low-hanging-fruit keywords with live SERP data:\n${JSON.stringify(compact, null, 1)}\n\nReturn this JSON shape:\n{\n  \"clusters\": [\n    { \"name\": \"string\", \"pillar_keyword\": \"string\", \"keywords\": [\"string\"], \"why_we_can_win\": \"string\" }\n  ],\n  \"keywords\": [\n    {\n      \"keyword\": \"exact keyword from the input\",\n      \"cluster\": \"cluster name\",\n      \"priority\": 1,\n      \"content_type\": \"how-to guide | listicle | comparison | explainer | checklist | case study | glossary\",\n      \"suggested_title\": \"string, max 60 characters\",\n      \"angle\": \"one sentence: the unique angle we take\",\n      \"differentiator\": \"one sentence: what we add that the top 5 results do not\",\n      \"questions_to_answer\": [\"the 4-8 most important questions the article must answer, using people_also_ask and related_questions\"]\n    }\n  ]\n}\npriority: 1 = write first (high opportunity, weak SERP, strong business fit), 3 = later.\nInclude every input keyword exactly once in \"keywords\".`;\n\nreturn [\n\t{\n\t\tjson: {\n\t\t\tanthropic_body: {\n\t\t\t\tmodel: cfg.claude_model,\n\t\t\t\tmax_tokens: 8000,\n\t\t\t\tsystem,\n\t\t\t\tmessages: [{ role: 'user', content: user }],\n\t\t\t},\n\t\t},\n\t},\n];\n"
+			},
+			"name": "Build positioning request",
+			"type": "n8n-nodes-base.code",
+			"typeVersion": 2,
+			"position": [
+				2360,
+				0
+			]
+		},
+		{
+			"id": "node-0025-4000-8000-000000000000",
+			"parameters": {
+				"method": "POST",
+				"url": "https://api.anthropic.com/v1/messages",
+				"authentication": "predefinedCredentialType",
+				"nodeCredentialType": "anthropicApi",
+				"sendHeaders": true,
+				"headerParameters": {
+					"parameters": [
+						{
+							"name": "anthropic-version",
+							"value": "2023-06-01"
+						}
+					]
+				},
+				"sendBody": true,
+				"specifyBody": "json",
+				"jsonBody": "={{ JSON.stringify($json.anthropic_body) }}",
+				"options": {
+					"timeout": 600000
+				}
+			},
+			"name": "Claude: Cluster & position",
+			"type": "n8n-nodes-base.httpRequest",
+			"typeVersion": 4.2,
+			"position": [
+				2580,
+				0
+			],
+			"credentials": {
+				"anthropicApi": {
+					"id": "anthropic",
+					"name": "Anthropic"
+				}
+			},
+			"retryOnFail": true,
+			"maxTries": 3,
+			"waitBetweenTries": 5000
+		},
+		{
+			"id": "node-0026-4000-8000-000000000000",
+			"parameters": {
+				"jsCode": "// Combines Claude's plan with the SERP data into flat rows for the\n// \"Keywords\" sheet (the backlog the blog writer workflow picks from).\nconst cfg = $('Prepare seeds').first().json;\nconst keywords = $('Add SERP insights').all().map((i) => i.json);\n\nconst text = ($input.first().json.content || [])\n\t.filter((block) => block.type === 'text')\n\t.map((block) => block.text)\n\t.join('');\nconst jsonText = text.slice(text.indexOf('{'), text.lastIndexOf('}') + 1);\n\nlet plan = { clusters: [], keywords: [] };\ntry {\n\tplan = JSON.parse(jsonText);\n} catch (error) {\n\tthrow new Error(`Claude did not return valid JSON. Raw answer starts with: ${text.slice(0, 300)}`);\n}\n\nconst planByKeyword = new Map(\n\t(plan.keywords || []).map((k) => [String(k.keyword).trim().toLowerCase(), k]),\n);\nconst clusterWhy = new Map((plan.clusters || []).map((c) => [c.name, c.why_we_can_win]));\nconst list = (values) => (values || []).filter(Boolean).join(' | ');\n\nreturn keywords.map((k) => {\n\tconst p = planByKeyword.get(k.keyword) || {};\n\treturn {\n\t\tjson: {\n\t\t\tkeyword: k.keyword,\n\t\t\tcluster: p.cluster || '',\n\t\t\tpriority: p.priority ?? 3,\n\t\t\topportunity_score: k.opportunity_score,\n\t\t\tsearch_volume: k.search_volume ?? 'unknown',\n\t\t\tkeyword_difficulty: k.keyword_difficulty ?? 'unknown',\n\t\t\tcpc: k.cpc ?? '',\n\t\t\tintent: k.intent,\n\t\t\tcurrent_position: k.current_position ?? '',\n\t\t\tcurrent_url: k.current_url || '',\n\t\t\tserp_strength: k.serp_strength,\n\t\t\tweak_serp_signals: k.weak_serp_signals,\n\t\t\ttop_competitors: list(k.top_competitors.map((c) => c.url)),\n\t\t\tpeople_also_ask: list(k.people_also_ask),\n\t\t\tquestions_to_answer: list(p.questions_to_answer || k.related_questions),\n\t\t\tangle: p.angle || '',\n\t\t\tdifferentiator: p.differentiator || '',\n\t\t\twhy_we_can_win: clusterWhy.get(p.cluster) || '',\n\t\t\tsuggested_title: p.suggested_title || '',\n\t\t\tcontent_type: p.content_type || '',\n\t\t\tstatus: 'ready',\n\t\t\tlocation: cfg.location_name,\n\t\t\tlanguage: cfg.language_name,\n\t\t\tresearched_at: cfg.researched_at,\n\t\t\tpost_slug: '',\n\t\t},\n\t};\n});\n"
+			},
+			"name": "Prepare sheet rows",
+			"type": "n8n-nodes-base.code",
+			"typeVersion": 2,
+			"position": [
+				2800,
+				0
+			]
+		},
+		{
+			"id": "node-0027-4000-8000-000000000000",
+			"parameters": {
+				"operation": "append",
+				"documentId": {
+					"__rl": true,
+					"mode": "id",
+					"value": "={{ $('Config').first().json.SHEET_ID }}"
+				},
+				"sheetName": {
+					"__rl": true,
+					"mode": "name",
+					"value": "Keywords"
+				},
+				"columns": {
+					"mappingMode": "autoMapInputData",
+					"value": {},
+					"matchingColumns": [],
+					"schema": []
+				},
+				"options": {}
+			},
+			"name": "Save to keyword backlog",
+			"type": "n8n-nodes-base.googleSheets",
+			"typeVersion": 4.5,
+			"position": [
+				3020,
+				0
+			],
+			"credentials": {
+				"googleSheetsOAuth2Api": {
+					"id": "google-sheets",
+					"name": "Google Sheets"
+				}
+			}
+		}
+	],
+	"connections": {
+		"Keyword research form": {
+			"main": [
+				[
+					{
+						"node": "Config",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Config": {
+			"main": [
+				[
+					{
+						"node": "Prepare seeds",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Prepare seeds": {
+			"main": [
+				[
+					{
+						"node": "DataForSEO: Keyword suggestions",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"DataForSEO: Keyword suggestions": {
+			"main": [
+				[
+					{
+						"node": "DataForSEO: Related keywords",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"DataForSEO: Related keywords": {
+			"main": [
+				[
+					{
+						"node": "DataForSEO: Keyword ideas",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"DataForSEO: Keyword ideas": {
+			"main": [
+				[
+					{
+						"node": "DataForSEO: Your striking-distance keywords",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"DataForSEO: Your striking-distance keywords": {
+			"main": [
+				[
+					{
+						"node": "Score low-hanging fruit",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Score low-hanging fruit": {
+			"main": [
+				[
+					{
+						"node": "DataForSEO: Google SERP",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"DataForSEO: Google SERP": {
+			"main": [
+				[
+					{
+						"node": "Add SERP insights",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Add SERP insights": {
+			"main": [
+				[
+					{
+						"node": "Build positioning request",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Build positioning request": {
+			"main": [
+				[
+					{
+						"node": "Claude: Cluster & position",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Claude: Cluster & position": {
+			"main": [
+				[
+					{
+						"node": "Prepare sheet rows",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Prepare sheet rows": {
+			"main": [
+				[
+					{
+						"node": "Save to keyword backlog",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		}
+	},
+	"pinData": {},
+	"settings": {
+		"executionOrder": "v1",
+		"saveManualExecutions": true
+	},
+	"active": false,
+	"tags": []
+}

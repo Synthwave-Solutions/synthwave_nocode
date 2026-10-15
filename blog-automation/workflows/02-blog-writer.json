@@ -1,0 +1,849 @@
+{
+	"name": "SEO 02 – Blog writer (research, links, diagrams, draft)",
+	"nodes": [
+		{
+			"id": "node-0047-4000-8000-000000000000",
+			"parameters": {
+				"content": "## 1. Pick a keyword\nRuns on schedule or manually. Takes the best `ready` keyword from the **Keywords** tab (or `KEYWORD_OVERRIDE` in Config).",
+				"width": 680,
+				"height": 620,
+				"color": 6
+			},
+			"name": "Note 28",
+			"type": "n8n-nodes-base.stickyNote",
+			"typeVersion": 1,
+			"position": [
+				-60,
+				-200
+			]
+		},
+		{
+			"id": "node-0048-4000-8000-000000000000",
+			"parameters": {},
+			"name": "Run now",
+			"type": "n8n-nodes-base.manualTrigger",
+			"typeVersion": 1,
+			"position": [
+				0,
+				-40
+			]
+		},
+		{
+			"id": "node-0049-4000-8000-000000000000",
+			"parameters": {
+				"rule": {
+					"interval": [
+						{
+							"field": "cronExpression",
+							"expression": "45 7 * * 1,4"
+						}
+					]
+				}
+			},
+			"name": "Mon + Thu 07:45",
+			"type": "n8n-nodes-base.scheduleTrigger",
+			"typeVersion": 1.2,
+			"position": [
+				0,
+				160
+			]
+		},
+		{
+			"id": "node-0050-4000-8000-000000000000",
+			"parameters": {
+				"mode": "manual",
+				"duplicateItem": false,
+				"assignments": {
+					"assignments": [
+						{
+							"id": "cfg-0029-4000-8000-000000000000",
+							"name": "SHEET_ID",
+							"value": "PASTE_YOUR_GOOGLE_SHEET_ID",
+							"type": "string"
+						},
+						{
+							"id": "cfg-0030-4000-8000-000000000000",
+							"name": "SITE_URL",
+							"value": "https://synthwave.solutions",
+							"type": "string"
+						},
+						{
+							"id": "cfg-0031-4000-8000-000000000000",
+							"name": "SITEMAP_URL",
+							"value": "https://synthwave.solutions/sitemap.xml",
+							"type": "string"
+						},
+						{
+							"id": "cfg-0032-4000-8000-000000000000",
+							"name": "BUSINESS_DESCRIPTION",
+							"value": "Describe your business, your offer and your ideal customer here.",
+							"type": "string"
+						},
+						{
+							"id": "cfg-0033-4000-8000-000000000000",
+							"name": "BRAND_VOICE",
+							"value": "Friendly expert. Plain language, concrete examples, no hype, no jargon without explanation.",
+							"type": "string"
+						},
+						{
+							"id": "cfg-0034-4000-8000-000000000000",
+							"name": "LANGUAGE",
+							"value": "Dutch",
+							"type": "string"
+						},
+						{
+							"id": "cfg-0035-4000-8000-000000000000",
+							"name": "LOCATION_NAME",
+							"value": "Netherlands",
+							"type": "string"
+						},
+						{
+							"id": "cfg-0036-4000-8000-000000000000",
+							"name": "TARGET_WORDS",
+							"value": 1800,
+							"type": "number"
+						},
+						{
+							"id": "cfg-0037-4000-8000-000000000000",
+							"name": "MAX_INTERNAL_LINKS",
+							"value": 5,
+							"type": "number"
+						},
+						{
+							"id": "cfg-0038-4000-8000-000000000000",
+							"name": "MAX_EXTERNAL_LINKS",
+							"value": 4,
+							"type": "number"
+						},
+						{
+							"id": "cfg-0039-4000-8000-000000000000",
+							"name": "MAX_SITEMAP_URLS",
+							"value": 400,
+							"type": "number"
+						},
+						{
+							"id": "cfg-0040-4000-8000-000000000000",
+							"name": "MAX_PAGES_TO_READ",
+							"value": 60,
+							"type": "number"
+						},
+						{
+							"id": "cfg-0041-4000-8000-000000000000",
+							"name": "COMPETITOR_PAGES_TO_READ",
+							"value": 5,
+							"type": "number"
+						},
+						{
+							"id": "cfg-0042-4000-8000-000000000000",
+							"name": "CLAUDE_MODEL",
+							"value": "claude-sonnet-5-5",
+							"type": "string"
+						},
+						{
+							"id": "cfg-0043-4000-8000-000000000000",
+							"name": "KEYWORD_OVERRIDE",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"includeOtherFields": true,
+				"include": "all",
+				"options": {}
+			},
+			"name": "Config",
+			"type": "n8n-nodes-base.set",
+			"typeVersion": 3.4,
+			"position": [
+				220,
+				60
+			]
+		},
+		{
+			"id": "node-0051-4000-8000-000000000000",
+			"parameters": {
+				"operation": "read",
+				"documentId": {
+					"__rl": true,
+					"mode": "id",
+					"value": "={{ $('Config').first().json.SHEET_ID }}"
+				},
+				"sheetName": {
+					"__rl": true,
+					"mode": "name",
+					"value": "Keywords"
+				},
+				"options": {}
+			},
+			"name": "Read keyword backlog",
+			"type": "n8n-nodes-base.googleSheets",
+			"typeVersion": 4.5,
+			"position": [
+				440,
+				60
+			],
+			"credentials": {
+				"googleSheetsOAuth2Api": {
+					"id": "google-sheets",
+					"name": "Google Sheets"
+				}
+			}
+		},
+		{
+			"id": "node-0052-4000-8000-000000000000",
+			"parameters": {
+				"content": "## 2. Research (separate from writing)\nInternal-link inventory from your sitemap, live SERP, competitor headings + the sources they cite (external links), and who links to the #1 page (backlink prospects).",
+				"width": 920,
+				"height": 620,
+				"color": 4
+			},
+			"name": "Note 44",
+			"type": "n8n-nodes-base.stickyNote",
+			"typeVersion": 1,
+			"position": [
+				640,
+				-200
+			]
+		},
+		{
+			"id": "node-0053-4000-8000-000000000000",
+			"parameters": {
+				"jsCode": "// Picks the next keyword from the backlog: status \"ready\", best priority\n// first, then highest opportunity score. KEYWORD_OVERRIDE forces a keyword.\nconst cfg = $('Config').first().json;\nconst rows = $input.all().map((i) => i.json);\n\nconst override = String(cfg.KEYWORD_OVERRIDE || '').trim().toLowerCase();\nconst ready = rows.filter((r) =>\n\toverride ? String(r.keyword).trim().toLowerCase() === override : String(r.status).trim().toLowerCase() === 'ready',\n);\n\nif (!ready.length) {\n\t// Nothing to write: stop quietly instead of failing the scheduled run.\n\treturn [];\n}\n\nready.sort(\n\t(a, b) =>\n\t\t(Number(a.priority) || 3) - (Number(b.priority) || 3) ||\n\t\t(Number(b.opportunity_score) || 0) - (Number(a.opportunity_score) || 0),\n);\n\nconst pick = ready[0];\nconst split = (value) =>\n\tString(value || '')\n\t\t.split('|')\n\t\t.map((s) => s.trim())\n\t\t.filter(Boolean);\n\nreturn [\n\t{\n\t\tjson: {\n\t\t\t...pick,\n\t\t\tkeyword: String(pick.keyword).trim(),\n\t\t\tquestions: [...new Set([...split(pick.questions_to_answer), ...split(pick.people_also_ask)])],\n\t\t\tcompetitor_urls: split(pick.top_competitors),\n\t\t\tlocation_name: pick.location || cfg.LOCATION_NAME,\n\t\t\tlanguage_name: pick.language || cfg.LANGUAGE,\n\t\t},\n\t},\n];\n"
+			},
+			"name": "Pick next keyword",
+			"type": "n8n-nodes-base.code",
+			"typeVersion": 2,
+			"position": [
+				700,
+				60
+			]
+		},
+		{
+			"id": "node-0054-4000-8000-000000000000",
+			"parameters": {
+				"jsCode": "// Builds the internal-link inventory from the site's sitemap(s): every\n// public URL with its title and meta description, so Claude can only link to\n// pages that really exist.\nconst cfg = $('Config').first().json;\nconst topic = $input.first().json;\n\nconst MAX_URLS = Number(cfg.MAX_SITEMAP_URLS) || 400;\nconst MAX_FETCH_TITLES = Number(cfg.MAX_PAGES_TO_READ) || 60;\nconst siteHost = new URL(cfg.SITE_URL).hostname.replace(/^www\\./, '');\nconst EXCLUDE = /\\/(tag|tags|category|author|page|feed|wp-json|cart|checkout|account|login|privacy|cookie|terms)(\\/|$)|\\.(jpg|jpeg|png|gif|webp|svg|pdf|xml)$/i;\n\nconst get = async (url) =>\n\tthis.helpers.httpRequest({\n\t\turl,\n\t\tmethod: 'GET',\n\t\ttimeout: 15000,\n\t\theaders: { 'User-Agent': 'Mozilla/5.0 (compatible; BlogAutomationBot/1.0)' },\n\t\treturnFullResponse: false,\n\t\tjson: false,\n\t});\n\nconst locs = (xml) => [...String(xml).matchAll(/<loc>\\s*(?:<!\\[CDATA\\[)?(.*?)(?:\\]\\]>)?\\s*<\\/loc>/gi)].map((m) => m[1].trim());\n\nconst sitemapQueue = [cfg.SITEMAP_URL || new URL('/sitemap.xml', cfg.SITE_URL).href];\nconst seenSitemaps = new Set();\nconst pageUrls = new Set();\n\nwhile (sitemapQueue.length && seenSitemaps.size < 25 && pageUrls.size < MAX_URLS) {\n\tconst sitemapUrl = sitemapQueue.shift();\n\tif (seenSitemaps.has(sitemapUrl)) continue;\n\tseenSitemaps.add(sitemapUrl);\n\tlet xml;\n\ttry {\n\t\txml = await get(sitemapUrl);\n\t} catch (error) {\n\t\tcontinue;\n\t}\n\tconst isIndex = /<sitemapindex/i.test(xml);\n\tfor (const loc of locs(xml)) {\n\t\tif (isIndex) sitemapQueue.push(loc);\n\t\telse pageUrls.add(loc);\n\t}\n}\n\nif (!pageUrls.size) {\n\tthrow new Error(`No URLs found in sitemap ${sitemapQueue[0] || cfg.SITEMAP_URL}. Set SITEMAP_URL in Config.`);\n}\n\nconst pages = [...pageUrls]\n\t.filter((u) => {\n\t\ttry {\n\t\t\treturn new URL(u).hostname.replace(/^www\\./, '') === siteHost && !EXCLUDE.test(new URL(u).pathname);\n\t\t} catch (error) {\n\t\t\treturn false;\n\t\t}\n\t})\n\t.slice(0, MAX_URLS)\n\t.map((url) => {\n\t\tconst slug = new URL(url).pathname.replace(/\\/$/, '').split('/').pop() || 'home';\n\t\treturn { url, title: slug.replace(/[-_]+/g, ' '), description: '' };\n\t});\n\n// Read the pages most related to the topic first so their real titles and\n// descriptions are known. The rest keep a title derived from the slug.\nconst topicTokens = String(topic.keyword).toLowerCase().split(/\\s+/).filter((t) => t.length >= 3);\nconst relatedness = (p) => topicTokens.filter((t) => p.url.toLowerCase().includes(t)).length;\nconst toRead = [...pages].sort((a, b) => relatedness(b) - relatedness(a)).slice(0, MAX_FETCH_TITLES);\n\nconst decode = (s) =>\n\tString(s || '')\n\t\t.replace(/&amp;/g, '&')\n\t\t.replace(/&quot;/g, '\"')\n\t\t.replace(/&#0?39;|&apos;/g, \"'\")\n\t\t.replace(/&lt;/g, '<')\n\t\t.replace(/&gt;/g, '>')\n\t\t.replace(/\\s+/g, ' ')\n\t\t.trim();\n\nfor (let i = 0; i < toRead.length; i += 6) {\n\tawait Promise.all(\n\t\ttoRead.slice(i, i + 6).map(async (page) => {\n\t\t\ttry {\n\t\t\t\tconst html = await get(page.url);\n\t\t\t\tconst title = html.match(/<title[^>]*>([\\s\\S]*?)<\\/title>/i)?.[1];\n\t\t\t\tconst description =\n\t\t\t\t\thtml.match(/<meta[^>]+name=[\"']description[\"'][^>]+content=[\"']([^\"']*)[\"']/i)?.[1] ||\n\t\t\t\t\thtml.match(/<meta[^>]+content=[\"']([^\"']*)[\"'][^>]+name=[\"']description[\"']/i)?.[1];\n\t\t\t\tif (title) page.title = decode(title);\n\t\t\t\tif (description) page.description = decode(description).slice(0, 200);\n\t\t\t} catch (error) {\n\t\t\t\t// Unreachable page: keep the slug-based title.\n\t\t\t}\n\t\t}),\n\t);\n}\n\nreturn [{ json: { ...topic, internal_pages: pages } }];\n"
+			},
+			"name": "Crawl sitemap (internal links)",
+			"type": "n8n-nodes-base.code",
+			"typeVersion": 2,
+			"position": [
+				920,
+				60
+			]
+		},
+		{
+			"id": "node-0055-4000-8000-000000000000",
+			"parameters": {
+				"method": "POST",
+				"url": "https://api.dataforseo.com/v3/serp/google/organic/live/advanced",
+				"authentication": "genericCredentialType",
+				"genericAuthType": "httpBasicAuth",
+				"sendBody": true,
+				"specifyBody": "json",
+				"jsonBody": "={{ JSON.stringify([{ keyword: $json.keyword, location_name: $json.location_name, language_name: $json.language_name, depth: 10, people_also_ask_click_depth: 2 }]) }}",
+				"options": {
+					"timeout": 120000
+				}
+			},
+			"name": "DataForSEO: Google SERP",
+			"type": "n8n-nodes-base.httpRequest",
+			"typeVersion": 4.2,
+			"position": [
+				1140,
+				60
+			],
+			"credentials": {
+				"httpBasicAuth": {
+					"id": "dataforseo",
+					"name": "DataForSEO"
+				}
+			},
+			"retryOnFail": true,
+			"waitBetweenTries": 3000
+		},
+		{
+			"id": "node-0056-4000-8000-000000000000",
+			"parameters": {
+				"jsCode": "// Reads the pages that currently rank: their headings (what we must cover\n// and beat) and the sources they cite (candidates for our external links).\nconst cfg = $('Config').first().json;\nconst topic = $('Crawl sitemap (internal links)').first().json;\nconst serp = $input.first().json.tasks?.[0]?.result?.[0]?.items || [];\n\nconst siteHost = new URL(cfg.SITE_URL).hostname.replace(/^www\\./, '');\nconst hostOf = (url) => {\n\ttry {\n\t\treturn new URL(url).hostname.replace(/^www\\./, '');\n\t} catch (error) {\n\t\treturn '';\n\t}\n};\n\nconst organic = serp\n\t.filter((i) => i.type === 'organic' && hostOf(i.url) !== siteHost)\n\t.slice(0, 10)\n\t.map((i) => ({ rank: i.rank_group, url: i.url, domain: hostOf(i.url), title: i.title, description: i.description || '' }));\n\nconst peopleAlsoAsk = serp\n\t.filter((i) => i.type === 'people_also_ask')\n\t.flatMap((i) => i.items || [])\n\t.map((q) => q.title)\n\t.filter(Boolean);\n\nconst competitorDomains = new Set(organic.map((o) => o.domain));\n// Sites we never cite: social, UGC, aggregators, link shorteners, and the\n// pages we are competing with.\nconst NEVER_CITE = /(facebook|instagram|twitter|x\\.com|linkedin|pinterest|tiktok|youtube|reddit|quora|medium|amazon|bol\\.com|bit\\.ly|google\\.|goo\\.gl|t\\.co|wa\\.me)/i;\nconst AUTHORITY = /\\.(gov|edu|ac\\.[a-z]{2}|europa\\.eu)$|(wikipedia\\.org|who\\.int|oecd\\.org|cbs\\.nl|rijksoverheid\\.nl|kvk\\.nl|belastingdienst\\.nl|statista\\.com|mckinsey\\.com|gartner\\.com|hbr\\.org|forrester\\.com|nature\\.com|ncbi\\.nlm\\.nih\\.gov|w3\\.org|developer\\.mozilla\\.org|developers\\.google\\.com|github\\.com)$/i;\n\nconst strip = (html) =>\n\tString(html)\n\t\t.replace(/<[^>]+>/g, ' ')\n\t\t.replace(/&nbsp;|&#160;/g, ' ')\n\t\t.replace(/&amp;/g, '&')\n\t\t.replace(/\\s+/g, ' ')\n\t\t.trim();\n\nconst competitorPages = [];\nconst externalCandidates = new Map();\n\nconst pagesToRead = organic.slice(0, Number(cfg.COMPETITOR_PAGES_TO_READ) || 5);\nawait Promise.all(\n\tpagesToRead.map(async (page) => {\n\t\tlet html = '';\n\t\ttry {\n\t\t\thtml = await this.helpers.httpRequest({\n\t\t\t\turl: page.url,\n\t\t\t\ttimeout: 20000,\n\t\t\t\tjson: false,\n\t\t\t\theaders: { 'User-Agent': 'Mozilla/5.0 (compatible; BlogAutomationBot/1.0)' },\n\t\t\t});\n\t\t} catch (error) {\n\t\t\tcompetitorPages.push({ ...page, headings: [], word_count: null, note: 'could not be fetched' });\n\t\t\treturn;\n\t\t}\n\t\tconst body = String(html)\n\t\t\t.replace(/<script[\\s\\S]*?<\\/script>/gi, '')\n\t\t\t.replace(/<style[\\s\\S]*?<\\/style>/gi, '')\n\t\t\t.replace(/<(nav|header|footer|aside)[\\s\\S]*?<\\/\\1>/gi, '');\n\t\tconst headings = [...body.matchAll(/<(h2|h3)[^>]*>([\\s\\S]*?)<\\/\\1>/gi)]\n\t\t\t.map((m) => `${m[1].toUpperCase()}: ${strip(m[2])}`)\n\t\t\t.filter((h) => h.length > 4)\n\t\t\t.slice(0, 30);\n\t\tconst wordCount = strip(body).split(' ').length;\n\n\t\tfor (const m of body.matchAll(/<a[^>]+href=[\"'](https?:\\/\\/[^\"'#]+)[\"'][^>]*>([\\s\\S]*?)<\\/a>/gi)) {\n\t\t\tconst url = m[1];\n\t\t\tconst domain = hostOf(url);\n\t\t\tif (!domain || domain === page.domain || domain === siteHost) continue;\n\t\t\tif (competitorDomains.has(domain) || NEVER_CITE.test(domain)) continue;\n\t\t\tconst anchor = strip(m[2]).slice(0, 120);\n\t\t\tif (anchor.length < 3) continue;\n\t\t\tconst existing = externalCandidates.get(url) || { url, domain, anchor, cited_by: 0, authority: AUTHORITY.test(domain) };\n\t\t\texisting.cited_by += 1;\n\t\t\texternalCandidates.set(url, existing);\n\t\t}\n\n\t\tcompetitorPages.push({ ...page, headings, word_count: wordCount });\n\t}),\n);\n\n// Authority sources and sources cited by several competitors first.\nconst externalSources = [...externalCandidates.values()]\n\t.sort((a, b) => Number(b.authority) - Number(a.authority) || b.cited_by - a.cited_by)\n\t.slice(0, 25);\n\nconst wordCounts = competitorPages.map((p) => p.word_count).filter(Boolean);\nconst medianWords = wordCounts.length ? wordCounts.sort((a, b) => a - b)[Math.floor(wordCounts.length / 2)] : null;\n\nreturn [\n\t{\n\t\tjson: {\n\t\t\t...topic,\n\t\t\tquestions: [...new Set([...(topic.questions || []), ...peopleAlsoAsk])].slice(0, 12),\n\t\t\tserp_results: organic,\n\t\t\tcompetitor_pages: competitorPages.sort((a, b) => a.rank - b.rank),\n\t\t\tcompetitor_median_words: medianWords,\n\t\t\texternal_sources: externalSources,\n\t\t},\n\t},\n];\n"
+			},
+			"name": "Research competitors",
+			"type": "n8n-nodes-base.code",
+			"typeVersion": 2,
+			"position": [
+				1360,
+				60
+			]
+		},
+		{
+			"id": "node-0057-4000-8000-000000000000",
+			"parameters": {
+				"method": "POST",
+				"url": "https://api.dataforseo.com/v3/backlinks/backlinks/live",
+				"authentication": "genericCredentialType",
+				"genericAuthType": "httpBasicAuth",
+				"sendBody": true,
+				"specifyBody": "json",
+				"jsonBody": "={{ JSON.stringify([{ target: $json.serp_results[0] ? $json.serp_results[0].url : \"\", mode: \"one_per_domain\", limit: 50, filters: [\"dofollow\", \"=\", true], order_by: [\"domain_from_rank,desc\"] }]) }}",
+				"options": {
+					"timeout": 120000
+				}
+			},
+			"name": "DataForSEO: Competitor backlinks",
+			"type": "n8n-nodes-base.httpRequest",
+			"typeVersion": 4.2,
+			"position": [
+				1580,
+				60
+			],
+			"credentials": {
+				"httpBasicAuth": {
+					"id": "dataforseo",
+					"name": "DataForSEO"
+				}
+			},
+			"retryOnFail": false,
+			"waitBetweenTries": 3000,
+			"onError": "continueRegularOutput",
+			"alwaysOutputData": true
+		},
+		{
+			"id": "node-0058-4000-8000-000000000000",
+			"parameters": {
+				"content": "## 3. Write\nClaude plans first (outline, internal + external link plan, Mermaid diagrams, FAQ), then writes. Links are restricted to real sitemap pages and researched sources.",
+				"width": 700,
+				"height": 620,
+				"color": 5
+			},
+			"name": "Note 45",
+			"type": "n8n-nodes-base.stickyNote",
+			"typeVersion": 1,
+			"position": [
+				1780,
+				-200
+			]
+		},
+		{
+			"id": "node-0059-4000-8000-000000000000",
+			"parameters": {
+				"jsCode": "// Step 1 of writing: Claude plans the article (outline, link plan, diagrams)\n// using only the research gathered so far.\nconst cfg = $('Config').first().json;\nconst r = $('Research competitors').first().json;\n\nconst internalPages = r.internal_pages\n\t.map((p) => `- ${p.url} | ${p.title}${p.description ? ` | ${p.description}` : ''}`)\n\t.join('\\n');\nconst externalSources = r.external_sources\n\t.map((s) => `- ${s.url} | anchor used by competitors: \"${s.anchor}\" | cited by ${s.cited_by} | authority: ${s.authority}`)\n\t.join('\\n');\nconst competitors = r.competitor_pages\n\t.map((p) => `#${p.rank} ${p.url} (${p.word_count ?? '?'} words)\\n${p.headings.map((h) => `   ${h}`).join('\\n')}`)\n\t.join('\\n');\n\nconst system = `You are a senior SEO editor planning a blog article for ${cfg.SITE_URL}.\nBusiness: ${cfg.BUSINESS_DESCRIPTION}\nWrite all reader-facing text in ${r.language_name}.\nRules:\n- The article must fully satisfy the search intent and be clearly better than the current top results: cover what they cover, then add the angle and differentiator.\n- Internal links: choose ONLY from the internal page list, exact URLs. Pick pages a reader of this article would genuinely want next. Use descriptive anchor text, never \"click here\".\n- External links: choose ONLY from the external source list, exact URLs. Prefer authority sources. Never link to a page that competes for this keyword.\n- Diagrams: plan 1 or 2 diagrams in Mermaid syntax (flowchart TD/LR, sequenceDiagram, timeline, pie or quadrantChart) that explain a process, decision or comparison from the article. Keep node labels short and in ${r.language_name}; wrap labels with special characters in double quotes.\n- Answer with JSON only, no prose and no code fences.`;\n\nconst user = `Primary keyword: ${r.keyword}\nSearch intent: ${r.intent} | Volume: ${r.search_volume} | Difficulty: ${r.keyword_difficulty}\nContent type: ${r.content_type || 'decide'}\nSuggested title: ${r.suggested_title || 'decide'}\nOur angle: ${r.angle || 'decide'}\nOur differentiator: ${r.differentiator || 'decide'}\nQuestions the article must answer:\n${r.questions.map((q) => `- ${q}`).join('\\n')}\n\nCurrent top results and their headings:\n${competitors}\n\nMedian competitor length: ${r.competitor_median_words ?? 'unknown'} words. Target length: ${cfg.TARGET_WORDS} words.\n\nInternal page list (url | title | description):\n${internalPages}\n\nExternal source list:\n${externalSources || '(none found — leave external_links empty)'}\n\nReturn this JSON shape:\n{\n  \"title\": \"H1, includes the primary keyword, max 65 characters\",\n  \"seo_title\": \"max 60 characters\",\n  \"meta_description\": \"max 155 characters, includes the keyword and a reason to click\",\n  \"slug\": \"lowercase-hyphenated\",\n  \"secondary_keywords\": [\"string\"],\n  \"search_intent_summary\": \"one sentence\",\n  \"outline\": [\n    { \"h2\": \"string\", \"h3\": [\"string\"], \"notes\": \"what this section must say\", \"answers_question\": \"question it answers or empty\" }\n  ],\n  \"internal_links\": [ { \"url\": \"exact url from the list\", \"anchor\": \"string\", \"section\": \"h2 where it goes\" } ],\n  \"external_links\": [ { \"url\": \"exact url from the list\", \"anchor\": \"string\", \"section\": \"h2 where it goes\", \"why\": \"what it supports\" } ],\n  \"diagrams\": [ { \"title\": \"string\", \"section\": \"h2 where it goes\", \"mermaid\": \"valid mermaid code\" } ],\n  \"faq\": [ { \"question\": \"string\", \"answer_hint\": \"string\" } ],\n  \"cta\": \"one sentence call to action that fits the business\",\n  \"featured_image_prompt\": \"prompt for an illustrative header image, no text in the image\"\n}\nUse ${cfg.MAX_INTERNAL_LINKS} internal links and up to ${cfg.MAX_EXTERNAL_LINKS} external links.`;\n\nreturn [\n\t{\n\t\tjson: {\n\t\t\tanthropic_body: {\n\t\t\t\tmodel: cfg.CLAUDE_MODEL,\n\t\t\t\tmax_tokens: 8000,\n\t\t\t\tsystem,\n\t\t\t\tmessages: [{ role: 'user', content: user }],\n\t\t\t},\n\t\t},\n\t},\n];\n"
+			},
+			"name": "Build outline request",
+			"type": "n8n-nodes-base.code",
+			"typeVersion": 2,
+			"position": [
+				1840,
+				60
+			]
+		},
+		{
+			"id": "node-0060-4000-8000-000000000000",
+			"parameters": {
+				"method": "POST",
+				"url": "https://api.anthropic.com/v1/messages",
+				"authentication": "predefinedCredentialType",
+				"nodeCredentialType": "anthropicApi",
+				"sendHeaders": true,
+				"headerParameters": {
+					"parameters": [
+						{
+							"name": "anthropic-version",
+							"value": "2023-06-01"
+						}
+					]
+				},
+				"sendBody": true,
+				"specifyBody": "json",
+				"jsonBody": "={{ JSON.stringify($json.anthropic_body) }}",
+				"options": {
+					"timeout": 600000
+				}
+			},
+			"name": "Claude: Outline & link plan",
+			"type": "n8n-nodes-base.httpRequest",
+			"typeVersion": 4.2,
+			"position": [
+				2060,
+				60
+			],
+			"credentials": {
+				"anthropicApi": {
+					"id": "anthropic",
+					"name": "Anthropic"
+				}
+			},
+			"retryOnFail": true,
+			"maxTries": 3,
+			"waitBetweenTries": 5000
+		},
+		{
+			"id": "node-0061-4000-8000-000000000000",
+			"parameters": {
+				"jsCode": "// Step 2 of writing: parse the plan, drop any link Claude invented, and ask\n// for the full article in Markdown.\nconst cfg = $('Config').first().json;\nconst r = $('Research competitors').first().json;\n\nconst text = ($input.first().json.content || [])\n\t.filter((block) => block.type === 'text')\n\t.map((block) => block.text)\n\t.join('');\nlet plan;\ntry {\n\tplan = JSON.parse(text.slice(text.indexOf('{'), text.lastIndexOf('}') + 1));\n} catch (error) {\n\tthrow new Error(`Outline was not valid JSON. Raw answer starts with: ${text.slice(0, 300)}`);\n}\n\nconst norm = (u) => String(u || '').trim().replace(/\\/+$/, '').toLowerCase();\nconst internalUrls = new Set(r.internal_pages.map((p) => norm(p.url)));\nconst externalUrls = new Set(r.external_sources.map((s) => norm(s.url)));\n\nplan.internal_links = (plan.internal_links || []).filter((l) => internalUrls.has(norm(l.url)));\nplan.external_links = (plan.external_links || []).filter((l) => externalUrls.has(norm(l.url)));\nplan.slug = String(plan.slug || r.keyword)\n\t.toLowerCase()\n\t.normalize('NFKD')\n\t.replace(/[̀-ͯ]/g, '')\n\t.replace(/[^a-z0-9]+/g, '-')\n\t.replace(/^-|-$/g, '');\n\nconst system = `You are an expert writer for ${cfg.SITE_URL}. Business: ${cfg.BUSINESS_DESCRIPTION}\nBrand voice: ${cfg.BRAND_VOICE}\nWrite in ${r.language_name}.\nRules:\n- Follow the outline exactly. Output GitHub-flavoured Markdown only, starting with \"# \" + the title. No front matter, no code fences around the whole article.\n- Open with a 2-3 sentence direct answer to the search intent (featured-snippet style), then a \"Key takeaways\" bullet list.\n- Use the primary keyword in the first 100 words and in at least one H2; use secondary keywords naturally. Never keyword-stuff.\n- Place every planned internal and external link exactly once, in its planned section, as [anchor](url). Do not add any other links.\n- Insert every planned diagram in its section as a fenced code block with the language \"mermaid\", preceded by a one-line caption in italics.\n- Add at least one Markdown table where a comparison or checklist helps the reader.\n- Never invent statistics, studies, quotes or customer names. If a claim needs a number you do not have, write it qualitatively.\n- End with an FAQ section (H2) using the planned questions as H3s with short direct answers, then a closing paragraph with the call to action.\n- Short paragraphs (max 3 sentences), concrete examples, active voice.`;\n\nconst user = `Primary keyword: ${r.keyword}\nTarget length: about ${cfg.TARGET_WORDS} words.\nAngle: ${r.angle}\nDifferentiator: ${r.differentiator}\n\nPlan:\n${JSON.stringify(plan, null, 1)}`;\n\nreturn [\n\t{\n\t\tjson: {\n\t\t\tplan,\n\t\t\tanthropic_body: {\n\t\t\t\tmodel: cfg.CLAUDE_MODEL,\n\t\t\t\tmax_tokens: 16000,\n\t\t\t\tsystem,\n\t\t\t\tmessages: [{ role: 'user', content: user }],\n\t\t\t},\n\t\t},\n\t},\n];\n"
+			},
+			"name": "Build article request",
+			"type": "n8n-nodes-base.code",
+			"typeVersion": 2,
+			"position": [
+				2280,
+				60
+			]
+		},
+		{
+			"id": "node-0062-4000-8000-000000000000",
+			"parameters": {
+				"method": "POST",
+				"url": "https://api.anthropic.com/v1/messages",
+				"authentication": "predefinedCredentialType",
+				"nodeCredentialType": "anthropicApi",
+				"sendHeaders": true,
+				"headerParameters": {
+					"parameters": [
+						{
+							"name": "anthropic-version",
+							"value": "2023-06-01"
+						}
+					]
+				},
+				"sendBody": true,
+				"specifyBody": "json",
+				"jsonBody": "={{ JSON.stringify($json.anthropic_body) }}",
+				"options": {
+					"timeout": 600000
+				}
+			},
+			"name": "Claude: Write article",
+			"type": "n8n-nodes-base.httpRequest",
+			"typeVersion": 4.2,
+			"position": [
+				2500,
+				60
+			],
+			"credentials": {
+				"anthropicApi": {
+					"id": "anthropic",
+					"name": "Anthropic"
+				}
+			},
+			"retryOnFail": true,
+			"maxTries": 3,
+			"waitBetweenTries": 5000
+		},
+		{
+			"id": "node-0063-4000-8000-000000000000",
+			"parameters": {
+				"content": "## 4. Quality gate + publish\nRemoves invented/broken links, renders diagrams to images (mermaid.ink), adds FAQ schema, saves to **Posts**, marks the keyword `drafted`, logs backlink prospects. Enable the WordPress node if you publish there.",
+				"width": 920,
+				"height": 860,
+				"color": 3
+			},
+			"name": "Note 46",
+			"type": "n8n-nodes-base.stickyNote",
+			"typeVersion": 1,
+			"position": [
+				2700,
+				-200
+			]
+		},
+		{
+			"id": "node-0064-4000-8000-000000000000",
+			"parameters": {
+				"jsCode": "// Quality gate for the draft: removes links that are not in the plan or are\n// broken, renders each Mermaid diagram to an image, and builds FAQ schema.\nconst cfg = $('Config').first().json;\nconst r = $('Research competitors').first().json;\nconst plan = $('Build article request').first().json.plan;\n\nlet markdown = ($input.first().json.content || [])\n\t.filter((block) => block.type === 'text')\n\t.map((block) => block.text)\n\t.join('')\n\t.trim()\n\t.replace(/^```(?:markdown|md)?\\s*\\n([\\s\\S]*)\\n```$/i, '$1');\n\nconst issues = [];\nconst norm = (u) => String(u || '').trim().replace(/\\/+$/, '').toLowerCase();\nconst siteHost = new URL(cfg.SITE_URL).hostname.replace(/^www\\./, '');\nconst internalUrls = new Set(r.internal_pages.map((p) => norm(p.url)));\nconst plannedExternal = new Set(plan.external_links.map((l) => norm(l.url)));\n\nconst isInternal = (url) => {\n\ttry {\n\t\treturn new URL(url).hostname.replace(/^www\\./, '') === siteHost;\n\t} catch (error) {\n\t\treturn false;\n\t}\n};\n\n// 1. Links: keep internal links that exist in the sitemap and external links\n// from the plan that still resolve. Anything else becomes plain text.\nconst linkPattern = /(?<!!)\\[([^\\]]+)\\]\\((https?:\\/\\/[^)\\s]+)\\)/g;\nconst externalStatus = new Map();\nfor (const [, , url] of markdown.matchAll(linkPattern)) {\n\tif (isInternal(url) || !plannedExternal.has(norm(url)) || externalStatus.has(url)) continue;\n\ttry {\n\t\tconst res = await this.helpers.httpRequest({\n\t\t\turl,\n\t\t\tmethod: 'GET',\n\t\t\ttimeout: 12000,\n\t\t\tjson: false,\n\t\t\treturnFullResponse: true,\n\t\t\tignoreHttpStatusErrors: true,\n\t\t\theaders: { 'User-Agent': 'Mozilla/5.0 (compatible; BlogAutomationBot/1.0)' },\n\t\t});\n\t\t// 401/403/429 usually means the site blocks bots, not that the page is gone.\n\t\texternalStatus.set(url, res.statusCode < 400 || [401, 403, 429].includes(res.statusCode));\n\t} catch (error) {\n\t\texternalStatus.set(url, false);\n\t}\n}\n\nlet internalCount = 0;\nlet externalCount = 0;\nmarkdown = markdown.replace(linkPattern, (match, anchor, url) => {\n\tif (isInternal(url)) {\n\t\tif (internalUrls.has(norm(url))) {\n\t\t\tinternalCount++;\n\t\t\treturn match;\n\t\t}\n\t\tissues.push(`Removed internal link not in sitemap: ${url}`);\n\t\treturn anchor;\n\t}\n\tif (externalStatus.get(url)) {\n\t\texternalCount++;\n\t\treturn match;\n\t}\n\tissues.push(`Removed external link (not planned or broken): ${url}`);\n\treturn anchor;\n});\n\n// 2. Diagrams: render each mermaid block with mermaid.ink. A diagram that\n// does not render (syntax error) is removed rather than published broken.\nconst diagrams = [];\nconst blocks = [...markdown.matchAll(/```mermaid\\s*\\n([\\s\\S]*?)```/g)];\nlet markdownForCms = markdown;\nfor (const [index, block] of blocks.entries()) {\n\tconst code = block[1].trim();\n\tconst encoded = Buffer.from(code, 'utf8').toString('base64url');\n\tconst pngUrl = `https://mermaid.ink/img/${encoded}?type=png&bgColor=!white&width=1200`;\n\tconst svgUrl = `https://mermaid.ink/svg/${encoded}`;\n\tconst title = plan.diagrams?.[index]?.title || `${r.keyword} diagram ${index + 1}`;\n\tlet renders = false;\n\ttry {\n\t\tconst res = await this.helpers.httpRequest({\n\t\t\turl: svgUrl,\n\t\t\ttimeout: 20000,\n\t\t\tjson: false,\n\t\t\treturnFullResponse: true,\n\t\t\tignoreHttpStatusErrors: true,\n\t\t});\n\t\trenders = res.statusCode === 200;\n\t} catch (error) {\n\t\trenders = false;\n\t}\n\tif (renders) {\n\t\tdiagrams.push({ title, mermaid: code, png_url: pngUrl, svg_url: svgUrl });\n\t\tmarkdownForCms = markdownForCms.replace(block[0], `![${title.replace(/[\\[\\]]/g, '')}](${pngUrl})`);\n\t} else {\n\t\tissues.push(`Diagram \"${title}\" did not render and was removed.`);\n\t\tmarkdownForCms = markdownForCms.replace(block[0], '');\n\t\tmarkdown = markdown.replace(block[0], '');\n\t}\n}\n\n// 3. FAQ schema from the \"FAQ\" H2 section: every H3 is a question.\nconst faqSection = markdown.split(/\\n## /).find((s) => /^(faq|veelgestelde vragen|frequently asked questions|veel gestelde vragen)/i.test(s.trim()));\nconst faq = faqSection\n\t? [...faqSection.matchAll(/\\n### (.+)\\n+([\\s\\S]*?)(?=\\n### |\\n## |$)/g)].map((m) => ({\n\t\t\t'@type': 'Question',\n\t\t\tname: m[1].trim(),\n\t\t\tacceptedAnswer: { '@type': 'Answer', text: m[2].replace(/\\[([^\\]]+)\\]\\([^)]+\\)/g, '$1').trim() },\n\t\t}))\n\t: [];\nconst faqSchema = faq.length\n\t? JSON.stringify({ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faq })\n\t: '';\n\nconst wordCount = markdown.replace(/```[\\s\\S]*?```/g, '').split(/\\s+/).filter(Boolean).length;\nif (internalCount < 2) issues.push(`Only ${internalCount} internal links made it into the article.`);\nif (wordCount < Number(cfg.TARGET_WORDS) * 0.7) issues.push(`Article is short: ${wordCount} words.`);\n\nreturn [\n\t{\n\t\tjson: {\n\t\t\tkeyword: r.keyword,\n\t\t\ttitle: plan.title,\n\t\t\tseo_title: plan.seo_title,\n\t\t\tmeta_description: plan.meta_description,\n\t\t\tslug: plan.slug,\n\t\t\tsecondary_keywords: (plan.secondary_keywords || []).join(' | '),\n\t\t\tmarkdown,\n\t\t\tmarkdown_for_cms: markdownForCms,\n\t\t\tdiagram_urls: diagrams.map((d) => d.png_url).join(' | '),\n\t\t\tdiagrams_mermaid: diagrams.map((d) => `%% ${d.title}\\n${d.mermaid}`).join('\\n\\n'),\n\t\t\tfaq_schema: faqSchema,\n\t\t\tfeatured_image_prompt: plan.featured_image_prompt || '',\n\t\t\tword_count: wordCount,\n\t\t\tinternal_links: internalCount,\n\t\t\texternal_links: externalCount,\n\t\t\tissues: issues.join(' | '),\n\t\t\tstatus: issues.length ? 'needs-review' : 'draft-ready',\n\t\t\tcreated_at: new Date().toISOString(),\n\t\t},\n\t},\n];\n"
+			},
+			"name": "Finalize draft",
+			"type": "n8n-nodes-base.code",
+			"typeVersion": 2,
+			"position": [
+				2760,
+				60
+			]
+		},
+		{
+			"id": "node-0065-4000-8000-000000000000",
+			"parameters": {
+				"mode": "markdownToHtml",
+				"markdown": "={{ $json.markdown_for_cms }}",
+				"destinationKey": "html",
+				"options": {}
+			},
+			"name": "Markdown to HTML",
+			"type": "n8n-nodes-base.markdown",
+			"typeVersion": 1,
+			"position": [
+				2980,
+				60
+			]
+		},
+		{
+			"id": "node-0066-4000-8000-000000000000",
+			"parameters": {
+				"operation": "append",
+				"documentId": {
+					"__rl": true,
+					"mode": "id",
+					"value": "={{ $('Config').first().json.SHEET_ID }}"
+				},
+				"sheetName": {
+					"__rl": true,
+					"mode": "name",
+					"value": "Posts"
+				},
+				"columns": {
+					"mappingMode": "autoMapInputData",
+					"value": {},
+					"matchingColumns": [],
+					"schema": []
+				},
+				"options": {}
+			},
+			"name": "Save draft to Posts",
+			"type": "n8n-nodes-base.googleSheets",
+			"typeVersion": 4.5,
+			"position": [
+				3240,
+				-100
+			],
+			"credentials": {
+				"googleSheetsOAuth2Api": {
+					"id": "google-sheets",
+					"name": "Google Sheets"
+				}
+			}
+		},
+		{
+			"id": "node-0067-4000-8000-000000000000",
+			"parameters": {
+				"jsCode": "// Marks the keyword as written so the next run picks a new one.\nconst post = $input.first().json;\nreturn [{ json: { keyword: post.keyword, status: 'drafted', post_slug: post.slug } }];\n"
+			},
+			"name": "Mark keyword drafted",
+			"type": "n8n-nodes-base.code",
+			"typeVersion": 2,
+			"position": [
+				3240,
+				80
+			]
+		},
+		{
+			"id": "node-0068-4000-8000-000000000000",
+			"parameters": {
+				"operation": "update",
+				"documentId": {
+					"__rl": true,
+					"mode": "id",
+					"value": "={{ $('Config').first().json.SHEET_ID }}"
+				},
+				"sheetName": {
+					"__rl": true,
+					"mode": "name",
+					"value": "Keywords"
+				},
+				"columns": {
+					"mappingMode": "autoMapInputData",
+					"value": {},
+					"matchingColumns": [
+						"keyword"
+					],
+					"schema": []
+				},
+				"options": {}
+			},
+			"name": "Update keyword status",
+			"type": "n8n-nodes-base.googleSheets",
+			"typeVersion": 4.5,
+			"position": [
+				3460,
+				80
+			],
+			"credentials": {
+				"googleSheetsOAuth2Api": {
+					"id": "google-sheets",
+					"name": "Google Sheets"
+				}
+			}
+		},
+		{
+			"id": "node-0069-4000-8000-000000000000",
+			"parameters": {
+				"jsCode": "// Turns the backlinks of the best-ranking competitor page into an outreach\n// list: sites that already link to this topic and may link to our article.\nconst r = $('Research competitors').first().json;\nconst post = $('Finalize draft').first().json;\n\nlet backlinks = [];\ntry {\n\tbacklinks = $('DataForSEO: Competitor backlinks')\n\t\t.all()\n\t\t.flatMap((i) => i.json.tasks || [])\n\t\t.flatMap((t) => t.result || [])\n\t\t.flatMap((res) => res.items || []);\n} catch (error) {\n\tbacklinks = [];\n}\n\nif (!backlinks.length) return [];\n\nreturn backlinks.slice(0, 50).map((b) => ({\n\tjson: {\n\t\tkeyword: r.keyword,\n\t\tour_post_slug: post.slug,\n\t\tcompetitor_url: b.url_to,\n\t\tlinking_page: b.url_from,\n\t\tlinking_domain: b.domain_from,\n\t\tlinking_page_title: b.page_from_title || '',\n\t\tanchor: b.anchor || '',\n\t\tdomain_rank: b.domain_from_rank ?? '',\n\t\tdofollow: b.dofollow ? 'yes' : 'no',\n\t\toutreach_status: 'todo',\n\t\tfound_at: new Date().toISOString(),\n\t},\n}));\n"
+			},
+			"name": "Backlink prospects",
+			"type": "n8n-nodes-base.code",
+			"typeVersion": 2,
+			"position": [
+				3240,
+				260
+			]
+		},
+		{
+			"id": "node-0070-4000-8000-000000000000",
+			"parameters": {
+				"operation": "append",
+				"documentId": {
+					"__rl": true,
+					"mode": "id",
+					"value": "={{ $('Config').first().json.SHEET_ID }}"
+				},
+				"sheetName": {
+					"__rl": true,
+					"mode": "name",
+					"value": "Link prospects"
+				},
+				"columns": {
+					"mappingMode": "autoMapInputData",
+					"value": {},
+					"matchingColumns": [],
+					"schema": []
+				},
+				"options": {}
+			},
+			"name": "Save link prospects",
+			"type": "n8n-nodes-base.googleSheets",
+			"typeVersion": 4.5,
+			"position": [
+				3460,
+				260
+			],
+			"credentials": {
+				"googleSheetsOAuth2Api": {
+					"id": "google-sheets",
+					"name": "Google Sheets"
+				}
+			}
+		},
+		{
+			"id": "node-0071-4000-8000-000000000000",
+			"parameters": {
+				"title": "={{ $json.title }}",
+				"additionalFields": {
+					"content": "={{ $json.html }}{{ $json.faq_schema ? '\\n<script type=\"application/ld+json\">' + $json.faq_schema + '</script>' : '' }}",
+					"slug": "={{ $json.slug }}",
+					"status": "draft"
+				}
+			},
+			"name": "Create WordPress draft",
+			"type": "n8n-nodes-base.wordpress",
+			"typeVersion": 1,
+			"position": [
+				3240,
+				440
+			],
+			"credentials": {
+				"wordpressApi": {
+					"id": "wordpress",
+					"name": "WordPress"
+				}
+			},
+			"disabled": true
+		}
+	],
+	"connections": {
+		"Run now": {
+			"main": [
+				[
+					{
+						"node": "Config",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Mon + Thu 07:45": {
+			"main": [
+				[
+					{
+						"node": "Config",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Config": {
+			"main": [
+				[
+					{
+						"node": "Read keyword backlog",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Read keyword backlog": {
+			"main": [
+				[
+					{
+						"node": "Pick next keyword",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Pick next keyword": {
+			"main": [
+				[
+					{
+						"node": "Crawl sitemap (internal links)",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Crawl sitemap (internal links)": {
+			"main": [
+				[
+					{
+						"node": "DataForSEO: Google SERP",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"DataForSEO: Google SERP": {
+			"main": [
+				[
+					{
+						"node": "Research competitors",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Research competitors": {
+			"main": [
+				[
+					{
+						"node": "DataForSEO: Competitor backlinks",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"DataForSEO: Competitor backlinks": {
+			"main": [
+				[
+					{
+						"node": "Build outline request",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Build outline request": {
+			"main": [
+				[
+					{
+						"node": "Claude: Outline & link plan",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Claude: Outline & link plan": {
+			"main": [
+				[
+					{
+						"node": "Build article request",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Build article request": {
+			"main": [
+				[
+					{
+						"node": "Claude: Write article",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Claude: Write article": {
+			"main": [
+				[
+					{
+						"node": "Finalize draft",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Finalize draft": {
+			"main": [
+				[
+					{
+						"node": "Markdown to HTML",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Markdown to HTML": {
+			"main": [
+				[
+					{
+						"node": "Save draft to Posts",
+						"type": "main",
+						"index": 0
+					},
+					{
+						"node": "Mark keyword drafted",
+						"type": "main",
+						"index": 0
+					},
+					{
+						"node": "Backlink prospects",
+						"type": "main",
+						"index": 0
+					},
+					{
+						"node": "Create WordPress draft",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Mark keyword drafted": {
+			"main": [
+				[
+					{
+						"node": "Update keyword status",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Backlink prospects": {
+			"main": [
+				[
+					{
+						"node": "Save link prospects",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		}
+	},
+	"pinData": {},
+	"settings": {
+		"executionOrder": "v1",
+		"saveManualExecutions": true
+	},
+	"active": false,
+	"tags": []
+}
